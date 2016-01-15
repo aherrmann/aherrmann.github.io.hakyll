@@ -5,7 +5,7 @@ import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid (mappend)
 import           Hakyll
-import           System.FilePath.Posix (splitFileName)
+import           System.FilePath.Posix (takeDirectory, splitFileName)
 
 
 --------------------------------------------------------------------------------
@@ -105,13 +105,14 @@ asIndexRoute extension =
 
 
 --------------------------------------------------------------------------------
--- | Replace url of the form foo/bar/index.html by foo/bar/.
+-- | Replace url of the form foo/bar/index.html by foo/bar.
 removeIndexHtml :: Item String -> Compiler (Item String)
 removeIndexHtml item = return $ fmap (withUrls removeIndexStr) item
     where
         removeIndexStr :: String -> String
-        removeIndexStr url = case splitFileName url of
-                                (dir, "index.html") | isLocal dir -> dir
-                                _                                 -> url
+        removeIndexStr url =
+            case splitFileName url of
+                (dir, "index.html") | isLocal dir -> takeDirectory dir
+                _                                 -> url
         isLocal :: String -> Bool
         isLocal uri        = not (isInfixOf "://" uri)
