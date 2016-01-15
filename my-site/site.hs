@@ -74,7 +74,8 @@ postRoute :: Routes
 postRoute =
     metadataRoute makeCategoryPath `composeRoutes`
     postDateRoute `composeRoutes`
-    setExtension "html"
+    setExtension "html" `composeRoutes`
+    asIndexRoute "html"
 
 
 --------------------------------------------------------------------------------
@@ -89,3 +90,9 @@ makeCategoryPath md =
 postDateRoute :: Routes
 postDateRoute =
     gsubRoute "/[0-9]{4}-[0-9]{2}-[0-9]{2}-" $ replaceAll "-" (const "/")
+
+
+--------------------------------------------------------------------------------
+asIndexRoute :: String -> Routes
+asIndexRoute extension =
+    gsubRoute ('.':extension) $ const ("/index." ++ extension)
