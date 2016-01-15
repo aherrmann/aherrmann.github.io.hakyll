@@ -78,6 +78,10 @@ postCtx =
 --------------------------------------------------------------------------------
 postRoute :: Routes
 postRoute =
+    -- TODO: Consider to store articles in a path that defines the category.
+    --       Then use the technique described under the following link to
+    --       format the route.
+    --       https://biosphere.cc/software-engineering/beautify-hakyll-post-urls-removing-extension-timestamp/
     metadataRoute makeCategoryPath `composeRoutes`
     postDateRoute `composeRoutes`
     setExtension "html" `composeRoutes`
