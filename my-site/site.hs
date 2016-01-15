@@ -73,6 +73,7 @@ postCtx =
 postRoute :: Routes
 postRoute =
     metadataRoute makeCategoryPath `composeRoutes`
+    postDateRoute `composeRoutes`
     setExtension "html"
 
 
@@ -82,3 +83,9 @@ makeCategoryPath md =
     gsubRoute "posts/" $ const . (++ "/") $
     fromMaybe (error "Posts: Post without category!") $
     M.lookup "category" md
+
+
+--------------------------------------------------------------------------------
+postDateRoute :: Routes
+postDateRoute =
+    gsubRoute "/[0-9]{4}-[0-9]{2}-[0-9]{2}-" $ replaceAll "-" (const "/")
