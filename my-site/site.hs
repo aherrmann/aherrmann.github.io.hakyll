@@ -1,5 +1,7 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
+import qualified Data.Map as M
+import           Data.Maybe (fromMaybe)
 import           Data.Monoid (mappend)
 import           Hakyll
 
@@ -22,7 +24,7 @@ main = hakyll $ do
             >>= relativizeUrls
 
     match "posts/*" $ do
-        route $ setExtension "html"
+        route $ postRoute
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
@@ -65,3 +67,18 @@ postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" `mappend`
     defaultContext
+
+
+--------------------------------------------------------------------------------
+postRoute :: Routes
+postRoute =
+    metadataRoute makeCategoryPath `composeRoutes`
+    setExtension "html"
+
+
+--------------------------------------------------------------------------------
+makeCategoryPath :: Metadata -> Routes
+makeCategoryPath md =
+    gsubRoute "posts/" $ const . (++ "/") $
+    fromMaybe (error "Posts: Post without category!") $
+    M.lookup "category" md
