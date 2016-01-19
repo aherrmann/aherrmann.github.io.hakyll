@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "Type Erasure with Merged Concepts"
 category: programming
 tags: [C++]
 ---
-{% include JB/setup %}
 
 Two days ago, I watched a very interesting talk by Zach Laine: [Pragmatic Type
 Erasure: Solving OOP Problems with an Elegant Design
@@ -35,16 +33,16 @@ idea. The function should accept an argument that specifies how to greet a
 person. We will call this argument a *Greeter*.  Here is a simple
 implementation of our function:
 
-{% highlight cpp %}
+``` cpp
 void greet_tom(const Greeter &g) {
     g.greet("Tom");
 }
-{% endhighlight %}
+```
 
 A user of this function may now wish to greet Tom in English and in French.
 So, he implements two Greeters:
 
-{% highlight cpp %}
+``` cpp
 struct English {
     void greet(const std::string &name) const {
         std::cout << "Good day " << name << ". How are you?\n";
@@ -56,7 +54,7 @@ struct French {
         std::cout << "Bonjour " << name << ". Comment ca va?\n";
     }
 };
-{% endhighlight %}
+```
 
 Now, how can the user pass his Greeters to our function?  Classically, we could
 either define an abstract base class and let our user derive from it, or we
@@ -67,7 +65,7 @@ With type-erasure, we will hide the templates, and the inheritance under the
 covers. We will define a `Greeter` class that can be initialized with anything
 that provides the expected Greeter interface. Following Sean Parent's pattern
 an implementation could look as follows:
-{% highlight cpp %}
+``` cpp
 class Greeter {
   public:
     // Constructor: We can stuff anything into a Greeter costume.
@@ -105,7 +103,7 @@ class Greeter {
     // Here we store our pointer to the Model that holds the users Greeter.
     std::shared_ptr<const Concept> self_;
 };
-{% endhighlight %}
+```
 
 Note that we are using a shared-pointer to *const* to refer to the
 implementation. The details are explained in Sean Parent's talk. We get
@@ -125,17 +123,17 @@ that opens doors. In some places of our code an Opener will be sufficient, in
 some other places we only need a Greeter, but in some places we need to first
 open the door for someone and then greet them:
 
-{% highlight cpp %}
+``` cpp
 void open_door_and_greet_john(const OpenerAndGreeter &g) {
     g.open();
     g.greet("John");
 }
-{% endhighlight %}
+```
 
 How do we create `OpenerAndGreeter`? Well, we can just create a whole new
 class for it and copy-paste the Opener, and Greeter parts into it. Like so:
 
-{% highlight cpp %}
+``` cpp
 class OpenerAndGreeter {
   public:
     template <class T>
@@ -165,7 +163,7 @@ class OpenerAndGreeter {
 
     std::shared_ptr<const Concept> self_;
 };
-{% endhighlight %}
+```
 
 But this is not ideal. It would be much better if we could take an existing
 Greeter concept, and an existing Opener concept, and just merge the two
@@ -183,18 +181,18 @@ actually does. So let's take the Greeter apart.
 First, it defines an abstract base class Concept. This is very specific to
 the Greeter. But, it has nothing to do with type-erasure. So, we pull it out.
 
-{% highlight cpp %}
+``` cpp
 // Defines the concept of a Greeter.
 struct Concept {
     virtual ~Concept() = default;
     virtual void greet(const std::string &name) const = 0;
 };
-{% endhighlight %}
+```
 
 Second, there is the model of that concept. This actually does two things: It
 holds an arbitrary value, and it passes the concept's interface through to
 that value. So, let's separate them.
-{% highlight cpp %}
+``` cpp
 // Holds a value of arbitrary type.
 template <class T>
 class Holder {
@@ -215,13 +213,13 @@ struct Model : public Holder, public Concept {
         this->Holder::get().greet(name);
     }
 };
-{% endhighlight %}
+```
 
 Next, Greeter is also a container that refers to a concept, and initializes it
 with a model. This is very specific to type-erasure, but has nothing to do
 with greeting people.
 
-{% highlight cpp %}
+``` cpp
 template <class Concept, template <class> class Model>
 class Container {
   public:
@@ -234,12 +232,12 @@ class Container {
   private:
     std::shared_ptr<const Concept> self_;
 };
-{% endhighlight %}
+```
 
 And after all this hacking and slashing there is only one bit left. Namely,
 the external interface that passes calls through to the container.
 
-{% highlight cpp %}
+``` cpp
 template <class Container>
 struct ExternalInterface : public Container {
     using Container::Container;  // pull in container's constructor
@@ -247,7 +245,7 @@ struct ExternalInterface : public Container {
         this->Container::get().greet(name);
     }
 };
-{% endhighlight %}
+```
 
 Great! We started out with a perfectly well functioning class and took it apart
 into tiny pieces. Now we need to reassemble them and make sure that it still
@@ -273,7 +271,7 @@ container for the spec's concept, and model. It will also pull in the
 base-classes constructor, so that we can still construct it from objects of
 arbitrary types.
 
-{% highlight cpp %}
+``` cpp
 template <class Spec>
 struct TypeErasure
     : public Spec::ExternalInterface<Container<Spec::Concept, Spec::Model>> {
@@ -283,7 +281,7 @@ struct TypeErasure
 };
 
 using Greeter = TypeErasure<GreeterSpec>;
-{% endhighlight %}
+```
 
 As the last line demonstrates, the Greeter itself is nothing but a TypeErasure
 of a certain spec.
@@ -304,9 +302,9 @@ component.
 How do we merge `Concept` classes, i.e. interfaces? In C++ we do this by
 multiple inheritance:
 
-{% highlight cpp %}
+``` cpp
 struct Concept : public virtual ConceptA, public virtual ConceptB {};
-{% endhighlight %}
+```
 
 How about the Models? The model is a template class that takes a holder as a
 template parameter and then inherits from said holder, thus becoming a holder
@@ -317,46 +315,46 @@ detail, though: We need to use virtual inheritance for the concepts. The
 reason is that `ConceptA`, and `ConceptB` will enter the merged `Model`
 through the merged `Concept`, but also through the models of the two specs.
 
-{% highlight cpp %}
+``` cpp
 template <class Holder>
 struct Model : public SpecA::Model<SpecB::Model<Holder>>,
                public virtual Concept { /* ... */ };
-{% endhighlight %}
+```
 
 The external interfaces are merged the same way, just without the concepts:
 
-{% highlight cpp %}
+``` cpp
 template <class Container>
 struct ExternalInterface
     : public SpecA::ExternalInterface<SpecB::ExternalInterface<Container>> {
     /* ... */
 };
-{% endhighlight %}
+```
 
 Finally, to construct a merged spec we take all the above items and wrap them
 in a template class, that takes two specs:
 
-{% highlight cpp %}
+``` cpp
 template <class SpecA, class SpecB>
 struct MergeSpecs {
     /* ... */
 };
-{% endhighlight %}
+```
 
 With this it is trivial to create a type-erasure that merges two concepts:
-{% highlight cpp %}
+``` cpp
 using OpenerAndGreeter = TypeErasure<MergeSpecs<OpenerSpec, GreeterSpec>>;
-{% endhighlight %}
+```
 
 And with just a little bit more of template magic it is even possible to merge
 two existing type-erasure classes. So, with all the above we write the
 following code:
 
-{% highlight cpp %}
+``` cpp
 using Opener = TypeErasure<OpenerSpec>;
 using Greeter = TypeErasure<GreeterSpec>;
 using OpenerAndGreeter = MergeConcepts<Opener, Greeter>;
-{% endhighlight %}
+```
 
 Done!
 

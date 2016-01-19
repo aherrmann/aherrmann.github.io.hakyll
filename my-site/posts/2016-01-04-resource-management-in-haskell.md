@@ -1,12 +1,10 @@
 ---
-layout: post
 title: "Resource Management in Haskell"
 description: "Resource management in Haskell from the perspective of a C++
               programmer"
 category: programming
 tags: [haskell]
 ---
-{% include JB/setup %}
 
 This is a post about Haskell. However, I would like to point out, that I am not
 a professional Haskell programmer. I have never had the opportunity to use it
@@ -44,7 +42,7 @@ Examples include allocated memory, file-handles, and locks on mutexes.
 All of the above are difficult to observe. Therefore, we will emulate a more
 verbose resource that notifies us whenever it is acquired or released.
 
-{% highlight cpp %}
+``` cpp
 class Resource {
   public:
     Resource (std::string name) : name_(std::move(name)) {
@@ -57,7 +55,7 @@ class Resource {
   private:
     std::string name_;
 };
-{% endhighlight %}
+```
 
 This defines the class `Resource`. Its constructor takes a string parameter, a
 name by which we want to refer to the particular instance. Both, the
@@ -65,7 +63,7 @@ constructor and destructor write the name to `stdout` such that we can trace
 the resource's lifetime.  The following code demonstrates how to use this
 class.
 
-{% highlight cpp %}
+``` cpp
 int main() {
     try {
         Resource a("A");
@@ -77,7 +75,7 @@ int main() {
         std::cout << "Oops\n";
     }
 }
-{% endhighlight %}
+```
 
 Here we acquire two resources `"A"`, and `"B"`, and then do some work with
 them. However, something goes wrong in the middle of it and we end up throwing
@@ -110,7 +108,7 @@ For the same reason as before we will first define a Haskell version of our
 emulated verbose resource and the corresponding pair of open and close
 functions.
 
-{% highlight haskell %}
+``` haskell
 data Resource = Resource String
 
 acquireResource :: String -> IO Resource
@@ -120,18 +118,18 @@ acquireResource name = do
 
 releaseResource :: Resource -> IO ()
 releaseResource (Resource name) = putStrLn $ "Released " ++ name
-{% endhighlight %}
+```
 
 To demonstrate exception handling we define the following exception type.
 
-{% highlight haskell %}
+``` haskell
 data ResourceException = ResourceException deriving (Show, Typeable)
 instance Exception ResourceException
-{% endhighlight %}
+```
 
 Our newly defined resource can be used in the following way.
 
-{% highlight haskell %}
+``` haskell
 main :: IO ()
 main = handle (\ResourceException -> putStrLn "Oops") $ do
   a <- acquireResource "A"
@@ -141,7 +139,7 @@ main = handle (\ResourceException -> putStrLn "Oops") $ do
   -- do some more with a and b
   releaseResource b
   releaseResource a
-{% endhighlight %}
+```
 
 However, when we look at the output we find that there is a problem.
 
@@ -162,14 +160,14 @@ argument defines how to acquire the resource, its second argument how to
 release the resource, and the third argument how to use the resource.  With its
 help we can define `withResource`.
 
-{% highlight haskell %}
+``` haskell
 withResource :: String -> (Resource -> IO r) -> IO r
 withResource name = bracket (acquireResource name) releaseResource
-{% endhighlight %}
+```
 
 An exception safe version of the above example can be implemented as follows.
 
-{% highlight haskell %}
+``` haskell
 main :: IO ()
 main = handle (\ResourceException -> putStrLn "Oops") $
   withResource "A" $ \a ->
@@ -177,7 +175,7 @@ main = handle (\ResourceException -> putStrLn "Oops") $
       -- do something with a and b
       throwIO ResourceException
       -- do some more with a and b
-{% endhighlight %}
+```
 
 And it produces the expected output.
 
@@ -220,7 +218,7 @@ and its constructor's signature matches that of the `with...` functions
 perfectly `ContT :: (a -> m r) -> m r -> ContT r m a`.  With it we can
 transform our previous example into the following form.
 
-{% highlight haskell %}
+``` haskell
 main :: IO ()
 main = handle (\ResourceException -> putStrLn "Oops") $ evalContT $ do
   a <- ContT $ withResource "A"
@@ -228,7 +226,7 @@ main = handle (\ResourceException -> putStrLn "Oops") $ evalContT $ do
   -- do something with a and b
   liftIO $ throwIO ResourceException
   -- do some more with a and b
-{% endhighlight %}
+```
 
 In the continuation monad we can build up a chain of continuations.  However,
 in the end we will have to decide on a final continuation and return a result.
@@ -262,10 +260,10 @@ It is called `finally` and part of the module `Control.Exception`. However, its
 signature `IO a -> IO b -> IO a` is not compatible with `ContT`. Therefore, we
 have to wrap it in the following way.
 
-{% highlight haskell %}
+``` haskell
 scopeExit :: IO a -> ContT r IO ()
 scopeExit action = ContT $ \f -> f () `finally` action
-{% endhighlight %}
+```
 
 This means that the result of `scopeExit` expects a continuation with the
 signature `() -> IO r`. In other words, `scopeExit` has nothing to pass on to
@@ -276,24 +274,24 @@ action if an exception was thrown.  As before we can implement it using a
 library function, namely `onException`. Its signature is identical to that of
 `finally` and we have to wrap it in the same way.
 
-{% highlight haskell %}
+``` haskell
 scopeFail :: IO a -> ContT r IO ()
 scopeFail action = ContT $ \f -> f () `onException` action
-{% endhighlight %}
+```
 
 Finally, `scopeSuccess` is a little harder to implement as there is no library
 function in Haskell which already does what we want. It is supposed to only
 execute the given action if no error occurred. However, if we lookup the
 implementation of `finally` we find that we only have to modify it slightly.
 
-{% highlight haskell %}
+``` haskell
 scopeSuccess :: IO a -> ContT r IO ()
 scopeSuccess action = ContT $ \f -> do
   mask $ \restore -> do
     r <- restore (f ())
     _ <- action
     return r
-{% endhighlight %}
+```
 
 Here we use the [function
 `mask`](http://hackage.haskell.org/package/base-4.8.1.0/docs/Control-Exception-Base.html#v:mask),
@@ -308,7 +306,7 @@ of `f ()` then `action` will never be executed.
 
 The following code demonstrates how these three functions can be used.
 
-{% highlight haskell %}
+``` haskell
 demo :: Bool -> IO ()
 demo throw = evalContT $ do
   scopeExit $ putStrLn "Leaving scope"
@@ -323,7 +321,7 @@ main = do
   handle (\ResourceException -> putStrLn "Oops") $ demo True
   putStrLn $ replicate 50 '-'
   handle (\ResourceException -> putStrLn "Oops") $ demo False
-{% endhighlight %}
+```
 
 The function `demo` takes a Boolean parameter that determines whether an
 exception will be thrown. It then establishes three scope guards, does some IO,
@@ -367,32 +365,32 @@ above.
 
 First we include all of the required modules.
 
-{% highlight haskell %}
+``` haskell
 import Control.Monad (unless)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Cont (ContT (..), evalContT)
 import Foreign.Marshal.Alloc (allocaBytes)
 import System.IO
-{% endhighlight %}
+```
 
 We define the buffer size as a global constant. In this case we will use 1 MiB.
 
-{% highlight haskell %}
+``` haskell
 bufferSize :: Int
 bufferSize = 1024 * 1024
-{% endhighlight %}
+```
 
 Since we want to print the progress in percent we need a way to calculate
 these numbers.
 
-{% highlight haskell %}
+``` haskell
 percentOf :: Integral a => a -> a -> a
 percentOf part all = (part * 100) `div` all
-{% endhighlight %}
+```
 
 Finally, we define the main program.
 
-{% highlight haskell %}
+``` haskell
 main :: IO ()
 main = evalContT $ do
   infile <- ContT $ withBinaryFile "infile" ReadMode
@@ -407,7 +405,7 @@ main = evalContT $ do
         hPutBuf outfile buffer bytesRead
         unless (bytesRead == 0) $ copy (progress + fromIntegral bytesRead)
   liftIO $ copy 0
-{% endhighlight %}
+```
 
 We first open the input and output files in binary mode. Then we allocate
 memory for the buffer. All these resources are acquired in the continuation
