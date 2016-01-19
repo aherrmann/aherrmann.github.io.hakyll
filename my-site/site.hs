@@ -7,6 +7,13 @@ import           Data.Monoid (mappend)
 import           Hakyll
 import           System.FilePath.Posix (takeDirectory, splitFileName)
 
+-- TODO: Decide on one of these options.
+--
+--        * Use Twitter Bootstrap. (Optionally v4)
+--        * Use Foundation. (There is a lucid-foundation package)
+--        * Use PureCSS.
+--        * Use Bourbon + Neat, or Compass + Susy.
+
 
 --------------------------------------------------------------------------------
 main :: IO ()
