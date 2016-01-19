@@ -27,7 +27,7 @@ main = hakyll $ do
             >>= removeIndexHtml
 
     match "posts/*" $ do
-        route $ postRoute
+        route   postRoute
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
@@ -119,4 +119,4 @@ removeIndexHtml item = return $ fmap (withUrls removeIndexStr) item
                 (dir, "index.html") | isLocal dir -> takeDirectory dir
                 _                                 -> url
         isLocal :: String -> Bool
-        isLocal uri        = not (isInfixOf "://" uri)
+        isLocal uri        = not ("://" `isInfixOf` uri)
