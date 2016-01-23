@@ -1,5 +1,6 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
+import           Data.DateTime (formatDateTime, getCurrentTime)
 import           Data.List (isInfixOf)
 import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
@@ -17,69 +18,68 @@ import           System.FilePath.Posix (takeDirectory, splitFileName)
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main = do
+  currYear <- formatDateTime "%Y" <$> getCurrentTime
+  let pageCtx = constField "currYear" currYear `mappend` defaultContext
+      postCtx = dateField "date" "%B %e, %Y"              `mappend`
+                constField "teaser" "TODO: Make teaser"   `mappend`
+                pageCtx
+
+  hakyll $ do
     match "images/*" $ do
-        route   idRoute
-        compile copyFileCompiler
+      route   idRoute
+      compile copyFileCompiler
 
     match "css/*" $ do
-        route   idRoute
-        compile compressCssCompiler
+      route   idRoute
+      compile compressCssCompiler
 
     match (fromList ["about.rst", "contact.markdown"]) $ do
-        route   $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
-            >>= removeIndexHtml
+      route   $ setExtension "html"
+      compile $ pandocCompiler
+          >>= loadAndApplyTemplate "templates/default.html" pageCtx
+          >>= relativizeUrls
+          >>= removeIndexHtml
 
     match "posts/*" $ do
-        route   postRoute
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    postCtx
-            >>= loadAndApplyTemplate "templates/default.html" postCtx
-            >>= relativizeUrls
-            >>= removeIndexHtml
+      route   postRoute
+      compile $ pandocCompiler
+          >>= loadAndApplyTemplate "templates/post.html"    postCtx
+          >>= loadAndApplyTemplate "templates/default.html" postCtx
+          >>= relativizeUrls
+          >>= removeIndexHtml
 
     create ["archive.html"] $ do
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
-                    defaultContext
+      route idRoute
+      compile $ do
+          posts <- recentFirst =<< loadAll "posts/*"
+          let archiveCtx =
+                  listField "posts" postCtx (return posts) `mappend`
+                  constField "title" "Archives"            `mappend`
+                  pageCtx
 
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-                >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-                >>= relativizeUrls
-                >>= removeIndexHtml
-
+          makeItem ""
+              >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
+              >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+              >>= relativizeUrls
+              >>= removeIndexHtml
 
     match "index.html" $ do
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let indexCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Home"                `mappend`
-                    defaultContext
+      route idRoute
+      compile $ do
+          posts <- recentFirst =<< loadAll "posts/*"
+          let indexCtx =
+                  listField "posts" postCtx (return posts) `mappend`
+                  constField "title" "Home"                `mappend`
+                  pageCtx
 
-            getResourceBody
-                >>= applyAsTemplate indexCtx
-                >>= loadAndApplyTemplate "templates/default.html" indexCtx
-                >>= relativizeUrls
-                >>= removeIndexHtml
+          getResourceBody
+              >>= applyAsTemplate indexCtx
+              >>= loadAndApplyTemplate "templates/default.html" indexCtx
+              >>= relativizeUrls
+              >>= removeIndexHtml
 
     match "templates/*" $ compile templateCompiler
-
-
---------------------------------------------------------------------------------
-postCtx :: Context String
-postCtx =
-    dateField "date" "%B %e, %Y" `mappend`
-    defaultContext
 
 
 --------------------------------------------------------------------------------
