@@ -79,6 +79,23 @@ main = do
               >>= relativizeUrls
               >>= removeIndexHtml
 
+    create [ "atom.xml" ] $ do
+      route idRoute
+      compile $ do
+          posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
+          let feedConfig = FeedConfiguration
+                  { feedTitle       = "Programming Blog"
+                  , feedDescription = ""
+                  , feedAuthorName  = "Andreas Herrmann"
+                  , feedAuthorEmail = "andreash87@gmx.ch"
+                  , feedRoot        = "http://aherrmann.github.io"
+                  }
+              feedCtx =
+                  constField "description" "" `mappend`
+                  postCtx
+          renderAtom feedConfig feedCtx posts
+              >>= removeAllIndexHtml
+
     match "templates/*" $ compile templateCompiler
 
 
@@ -127,3 +144,14 @@ removeIndexHtml item = return $ fmap (withUrls removeIndexStr) item
                 _                                 -> url
         isLocal :: String -> Bool
         isLocal uri        = not ("://" `isInfixOf` uri)
+
+-- | Replace url of the form *foo/bar/index.html by *foo/bar.
+--   This includes external urls.
+removeAllIndexHtml :: Item String -> Compiler (Item String)
+removeAllIndexHtml item = return $ fmap (withUrls removeIndexStr) item
+    where
+        removeIndexStr :: String -> String
+        removeIndexStr url =
+            case splitFileName url of
+                (dir, "index.html") -> takeDirectory dir
+                _                   -> url
