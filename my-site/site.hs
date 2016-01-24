@@ -46,7 +46,6 @@ main = do
       compile $ pandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" pageCtx
           >>= relativizeUrls
-          >>= removeIndexHtml
 
     match "posts/*" $ do
       route   postRoute
@@ -56,7 +55,6 @@ main = do
           >>= loadAndApplyTemplate "templates/post.html"         postCtx
           >>= loadAndApplyTemplate "templates/default.html"      postCtx
           >>= relativizeUrls
-          >>= removeIndexHtml
 
     create ["archive.html"] $ do
       route idRoute
@@ -71,7 +69,6 @@ main = do
               >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
               >>= loadAndApplyTemplate "templates/default.html" archiveCtx
               >>= relativizeUrls
-              >>= removeIndexHtml
 
     match "index.html" $ do
       route idRoute
@@ -86,7 +83,6 @@ main = do
               >>= applyAsTemplate indexCtx
               >>= loadAndApplyTemplate "templates/default.html" indexCtx
               >>= relativizeUrls
-              >>= removeIndexHtml
 
     create [ "atom.xml" ] $ do
       route idRoute
@@ -106,7 +102,6 @@ main = do
                   bodyField "description"
 
           renderAtom feedConfig feedCtx posts
-              >>= removeAtomIndexHtml
 
     match "templates/*" $ compile templateCompiler
 
@@ -142,47 +137,6 @@ postDateRoute =
 asIndexRoute :: String -> Routes
 asIndexRoute extension =
     gsubRoute ('.':extension) $ const ("/index." ++ extension)
-
-
---------------------------------------------------------------------------------
--- | Replace url of the form foo/bar/index.html by foo/bar.
-removeIndexHtml :: Item String -> Compiler (Item String)
-removeIndexHtml item = return $ fmap (withUrls removeIndexStr) item
-    where
-        removeIndexStr :: String -> String
-        removeIndexStr url =
-            case splitFileName url of
-                (dir, "index.html") | isLocal dir -> takeDirectory dir
-                _                                 -> url
-        isLocal :: String -> Bool
-        isLocal uri        = not ("://" `isInfixOf` uri)
-
-
---------------------------------------------------------------------------------
--- | Replace url of the form *foo/bar/index.html by *foo/bar.
---   This includes external urls.
-removeAtomIndexHtml :: Item String -> Compiler (Item String)
-removeAtomIndexHtml =
-    return . fmap ( renderTags' . id' . map link . TS.parseTags)
-    where
-        renderTags' :: [TS.Tag String] -> String
-        renderTags' = TS.renderTagsOptions TS.renderOptions
-                          { TS.optEscape   = id
-                          , TS.optRawTag   = const True
-                          }
-        id' = reverse . fst . foldr f ([], False) . reverse
-        f t@(TS.TagOpen "id" _) (ts, False) = (t:ts, True)
-        f t@(TS.TagText url)  (ts, True)  = (TS.TagText (removeIndexStr url):ts, False)
-        f t                   (ts, b)     = (t:ts, b)
-        link (TS.TagOpen "link" a) = TS.TagOpen "link" $ map attr a
-        link t                     = t
-        attr ("href", v) = ("href", removeIndexStr v)
-        attr a           = a
-        removeIndexStr :: String -> String
-        removeIndexStr url =
-            case splitFileName url of
-                (dir, "index.html") -> takeDirectory dir
-                _                   -> url
 
 
 --------------------------------------------------------------------------------
