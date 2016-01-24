@@ -44,6 +44,11 @@ main = do
       route   idRoute
       compile copyFileCompiler
 
+    match "css/*.hs" $ do
+      route   $ setExtension "css"
+      compile $ getResourceString
+          >>= withItemBody (unixFilter "cabal" ["exec", "runghc"])
+
     match "css/*" $ do
       route   idRoute
       compile compressCssCompiler
