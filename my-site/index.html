@@ -9,7 +9,9 @@ $for(posts)$
   $if(abstract)$
     $abstract$
   $else$
-    $teaser$
+    $if(teaser)$
+      $teaser$
+    $endif$
   $endif$
   </p>
   <p><a href="$url$">Read more &hellip;</a></p>

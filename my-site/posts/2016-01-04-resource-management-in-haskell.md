@@ -13,6 +13,8 @@ I do most of my everyday programming in C++ or Python and this will be
 reflected in this article. I will discuss resource management in Haskell from
 the perspective of a C++ programmer.
 
+<!--more-->
+
 I will show a number of example codes in this article. If you want to follow
 along you can find the source code of all examples
 [here](http://github.com/aherrmann/resource_management_in_haskell).

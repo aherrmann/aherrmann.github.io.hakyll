@@ -21,10 +21,15 @@ import           System.FilePath.Posix (takeDirectory, splitFileName)
 main :: IO ()
 main = do
   currYear <- formatDateTime "%Y" <$> getCurrentTime
-  let pageCtx = constField "currYear" currYear `mappend` defaultContext
-      postCtx = dateField "date" "%B %e, %Y"              `mappend`
-                constField "teaser" "TODO: Make teaser"   `mappend`
-                pageCtx
+  let pageCtx =
+          constField "currYear" currYear           `mappend`
+          defaultContext
+      postCtx =
+          dateField "date" "%B %e, %Y"             `mappend`
+          pageCtx
+      teasCtx =
+          teaserField "teaser" "content"           `mappend`
+          postCtx
 
   hakyll $ do
     match "images/*" $ do
@@ -56,7 +61,7 @@ main = do
       compile $ do
           posts <- recentFirst =<< loadAll "posts/*"
           let archiveCtx =
-                  listField "posts" postCtx (return posts) `mappend`
+                  listField "posts" teasCtx (return posts) `mappend`
                   constField "title" "Archives"            `mappend`
                   pageCtx
 
@@ -71,7 +76,7 @@ main = do
       compile $ do
           posts <- recentFirst =<< loadAll "posts/*"
           let indexCtx =
-                  listField "posts" postCtx (return posts) `mappend`
+                  listField "posts" teasCtx (return posts) `mappend`
                   constField "title" "Home"                `mappend`
                   pageCtx
 
@@ -93,7 +98,10 @@ main = do
                   , feedAuthorEmail = "andreash87@gmx.ch"
                   , feedRoot        = "http://aherrmann.github.io"
                   }
-              feedCtx = postCtx `mappend` bodyField "description"
+              feedCtx =
+                  teasCtx                                  `mappend`
+                  bodyField "description"
+
           renderAtom feedConfig feedCtx posts
               >>= removeAtomIndexHtml
 
