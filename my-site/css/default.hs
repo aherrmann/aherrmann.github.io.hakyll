@@ -38,6 +38,9 @@ menuItemColor = lightBlueColor
 menuItemBgColor :: Color
 menuItemBgColor = blueColor
 
+footerColor :: Color
+footerColor = lightBlueColor
+
 mainCss :: Css
 mainCss = do
     (h1 <> h2 <> h3 <> h4 <> h5 <> h6) ? a ?
@@ -92,3 +95,8 @@ mainCss = do
             borderRadius (px 20) (px 0) (px 0) (px 0)
         li # lastChild <? do
             borderRadius (px 0) (px 20) (px 0) (px 0)
+    footer # "#page-footer" ? do
+        textAlign $ alignSide sideCenter
+        color footerColor
+        a # link ? color blueColor
+        a # visited ? color lightBlueColor
