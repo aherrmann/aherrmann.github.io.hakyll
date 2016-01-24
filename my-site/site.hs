@@ -5,6 +5,7 @@ import           Data.List (isInfixOf)
 import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid (mappend)
+import           Text.Pandoc.Options (writerHtml5)
 import qualified Text.HTML.TagSoup as TS
 import           Hakyll
 import           System.FilePath.Posix (takeDirectory, splitFileName)
@@ -33,6 +34,10 @@ main = do
       teasCtx =
           teaserField "teaser" "content"           `mappend`
           postCtx
+      customPandocCompiler =
+          pandocCompilerWith
+                defaultHakyllReaderOptions
+                defaultHakyllWriterOptions { writerHtml5 = True }
 
   hakyll $ do
     match "images/*" $ do

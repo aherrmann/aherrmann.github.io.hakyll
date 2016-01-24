@@ -9,6 +9,7 @@ executable site
                   , containers
                   , datetime
                   , filepath
+                  , pandoc
                   , tagsoup
                   , hakyll == 4.7.*
   ghc-options:      -threaded
