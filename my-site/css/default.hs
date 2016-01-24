@@ -56,8 +56,53 @@ mainCss = do
         margin (px 0) auto (px 0) auto
         backgroundColor bodyBgColor
         section <? do
-            marginLeft (px 20)
-            marginRight (px 20)
+            marginLeft (px 10)
+            marginRight (px 10)
+    h1 # ".section-title" ? do
+        borderBottom solid (px 1) lightBlueColor
+        color lightBlueColor
+        fontSize (rem 1.6)
+        marginLeft (px 20)
+        marginRight (px 20)
+        paddingTop (rem 1)
+    article # ".post-preview" <> article # "#post" ? do
+        backgroundColor (bodyBgColor -. 10)
+        background $ vGradient (bodyBgColor -. 10) (bodyBgColor -. 5)
+        borderRadius (px 10) (px 10) (px 10) (px 10)
+        margin (px 10) (px 0) (px 10) (px 0)
+        padding (px 20) (px 20) (px 20) (px 20)
+    (header # ".post-preview-header" <> header # "#post-header") ** h1 ? do
+        margin (px 0) (px 0) (px 0) (px 0)
+    section # "#sharing" ? do
+        float floatLeft
+        display inlineBlock
+        margin (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
+    nav # "#post-nav" |> ul ? do
+        display block
+        fontSize (px 0)
+        listStyleType none
+        margin (px 0) (px 0) (px 0) (px 0)
+        overflow hidden
+        padding (px 0) (px 0) (px 0) (px 0)
+        textAlign $ alignSide sideRight
+        li <? do
+            fontSize (rem 1.2)
+            display inlineBlock
+            backgroundColor (bodyBgColor -. 10)
+            background $ vGradient (bodyBgColor -. 10) (bodyBgColor -. 5)
+            borderRadius (em 0.5) (em 0.5) (em 0.5) (em 0.5)
+            margin (rem 1) (rem 0) (rem 1) (rem 1)
+            a <? do
+                color menuItemColor
+                display block
+                textAlign $ alignSide sideCenter
+                textDecoration none
+                padding (em 0.5) (em 0.5) (em 0.5) (em 0.5)
+        li # hover <? do
+            backgroundColor menuItemBgColor
+            background $ vGradient (menuItemBgColor -. 10) menuItemBgColor
+            a <? do
+                color menuItemColor
     pageHeaderCss
     pageFooterCss
 
