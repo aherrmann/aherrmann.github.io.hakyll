@@ -67,6 +67,7 @@ pageHeaderCss :: Css
 pageHeaderCss = do
     header # "#page-header" ? do
         backgroundColor titleBgColor
+        background $ vGradient (darkBlueColor +. 30) darkBlueColor
         borderRadius (px 0) (px 0) (px 20) (px 20)
         marginTop (px 0)
         padding (px 20) (px 20) (px 0) (px 20)
@@ -96,6 +97,8 @@ pageHeaderCss = do
             fontSize (rem 1.2)
             display inlineBlock
             backgroundColor menuItemBgColor
+            background $ vGradient (menuItemBgColor -. 10) menuItemBgColor
+            "box-shadow" -: "10px 10px 10px 10px gray inset"
             a <? do
                 color menuItemColor
                 display block
@@ -104,6 +107,7 @@ pageHeaderCss = do
                 padding (em 1) (em 1) (em 1) (em 1)
         li # hover <? do
             backgroundColor whiteColor
+            background $ vGradient (whiteColor -. 10) whiteColor
         li # firstChild <? do
             borderRadius (px 20) (px 0) (px 0) (px 0)
         li # lastChild <? do
