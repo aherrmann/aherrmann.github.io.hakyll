@@ -1,5 +1,5 @@
 ---
-title: "Type Erasure with Merged Concepts"
+title: Type Erasure with Merged Concepts
 category: programming
 tags: [C++]
 ---

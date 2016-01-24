@@ -1,7 +1,5 @@
 ---
-title: "Resource Management in Haskell"
-description: "Resource management in Haskell from the perspective of a C++
-              programmer"
+title: Resource Management in Haskell
 category: programming
 tags: [haskell]
 ---
