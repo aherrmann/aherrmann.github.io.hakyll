@@ -65,7 +65,6 @@ main = do
           let archiveCtx =
                   directoryUrlField "url"                  `mappend`
                   listField "posts" teasCtx (return posts) `mappend`
-                  constField "title" "Archives"            `mappend`
                   pageCtx
 
           getResourceBody
@@ -79,7 +78,6 @@ main = do
           posts <- recentFirst =<< loadAll "posts/*"
           let indexCtx =
                   listField "posts" teasCtx (return posts) `mappend`
-                  constField "title" "Home"                `mappend`
                   pageCtx
 
           getResourceBody
