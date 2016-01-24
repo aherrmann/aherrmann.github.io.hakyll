@@ -58,7 +58,7 @@ main = do
           >>= loadAndApplyTemplate "templates/default.html"      postCtx
           >>= relativizeUrls
 
-    create ["archive.html"] $ do
+    match "archive.html" $ do
       route idRoute
       compile $ do
           posts <- recentFirst =<< loadAll "posts/*"
@@ -67,8 +67,8 @@ main = do
                   constField "title" "Archives"            `mappend`
                   pageCtx
 
-          makeItem ""
-              >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
+          getResourceBody
+              >>= applyAsTemplate archiveCtx
               >>= loadAndApplyTemplate "templates/default.html" archiveCtx
               >>= relativizeUrls
 
