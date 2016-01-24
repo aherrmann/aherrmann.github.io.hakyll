@@ -98,7 +98,6 @@ pageHeaderCss = do
             display inlineBlock
             backgroundColor menuItemBgColor
             background $ vGradient (menuItemBgColor -. 10) menuItemBgColor
-            "box-shadow" -: "10px 10px 10px 10px gray inset"
             a <? do
                 color menuItemColor
                 display block
