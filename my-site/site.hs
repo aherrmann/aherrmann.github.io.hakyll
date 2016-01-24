@@ -59,10 +59,11 @@ main = do
           >>= relativizeUrls
 
     match "archive.html" $ do
-      route idRoute
+      route   $ asIndexRoute "html"
       compile $ do
           posts <- recentFirst =<< loadAll "posts/*"
           let archiveCtx =
+                  directoryUrlField "url"                  `mappend`
                   listField "posts" teasCtx (return posts) `mappend`
                   constField "title" "Archives"            `mappend`
                   pageCtx
