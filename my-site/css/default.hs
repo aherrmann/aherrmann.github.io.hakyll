@@ -8,6 +8,8 @@ main :: IO ()
 main = T.putStr $ renderWith pretty [] mainCss
 -- main = T.putStr $ renderWith compact [] mainCss
 
+
+--------------------------------------------------------------------------------
 whiteColor :: Color
 whiteColor = "#F6F2F1"
 
@@ -20,6 +22,8 @@ blueColor = "#44495D"
 darkBlueColor :: Color
 darkBlueColor = "#242335"
 
+
+--------------------------------------------------------------------------------
 bodyBgColor :: Color
 bodyBgColor = whiteColor
 
@@ -41,6 +45,8 @@ menuItemBgColor = blueColor
 footerColor :: Color
 footerColor = lightBlueColor
 
+
+--------------------------------------------------------------------------------
 mainCss :: Css
 mainCss = do
     (h1 <> h2 <> h3 <> h4 <> h5 <> h6) ? a ?
@@ -52,6 +58,13 @@ mainCss = do
         section <? do
             marginLeft (px 20)
             marginRight (px 20)
+    pageHeaderCss
+    pageFooterCss
+
+
+--------------------------------------------------------------------------------
+pageHeaderCss :: Css
+pageHeaderCss = do
     header # "#page-header" ? do
         backgroundColor titleBgColor
         borderRadius (px 0) (px 0) (px 20) (px 20)
@@ -95,6 +108,11 @@ mainCss = do
             borderRadius (px 20) (px 0) (px 0) (px 0)
         li # lastChild <? do
             borderRadius (px 0) (px 20) (px 0) (px 0)
+
+
+--------------------------------------------------------------------------------
+pageFooterCss :: Css
+pageFooterCss = do
     footer # "#page-footer" ? do
         textAlign $ alignSide sideCenter
         color footerColor
