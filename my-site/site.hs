@@ -50,9 +50,10 @@ main = do
     match "posts/*" $ do
       route   postRoute
       compile $ pandocCompiler
-          >>= loadAndApplyTemplate "templates/post.html"    postCtx
+          >>= loadAndApplyTemplate "templates/post-content.html" postCtx
           >>= saveSnapshot "content"
-          >>= loadAndApplyTemplate "templates/default.html" postCtx
+          >>= loadAndApplyTemplate "templates/post.html"         postCtx
+          >>= loadAndApplyTemplate "templates/default.html"      postCtx
           >>= relativizeUrls
           >>= removeIndexHtml
 
