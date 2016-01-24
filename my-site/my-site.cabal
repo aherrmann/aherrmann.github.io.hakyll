@@ -9,6 +9,7 @@ executable site
                   , containers
                   , datetime
                   , filepath
+                  , tagsoup
                   , hakyll == 4.7.*
   ghc-options:      -threaded
   default-language: Haskell2010

@@ -5,6 +5,7 @@ import           Data.List (isInfixOf)
 import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid (mappend)
+import qualified Text.HTML.TagSoup as TS
 import           Hakyll
 import           System.FilePath.Posix (takeDirectory, splitFileName)
 
@@ -45,6 +46,7 @@ main = do
       route   postRoute
       compile $ pandocCompiler
           >>= loadAndApplyTemplate "templates/post.html"    postCtx
+          >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" postCtx
           >>= relativizeUrls
           >>= removeIndexHtml
@@ -82,7 +84,8 @@ main = do
     create [ "atom.xml" ] $ do
       route idRoute
       compile $ do
-          posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
+          posts <- fmap (take 10) . recentFirst =<<
+                       loadAllSnapshots "posts/*" "content"
           let feedConfig = FeedConfiguration
                   { feedTitle       = "Programming Blog"
                   , feedDescription = ""
@@ -90,11 +93,9 @@ main = do
                   , feedAuthorEmail = "andreash87@gmx.ch"
                   , feedRoot        = "http://aherrmann.github.io"
                   }
-              feedCtx =
-                  constField "description" "" `mappend`
-                  postCtx
+              feedCtx = postCtx `mappend` bodyField "description"
           renderAtom feedConfig feedCtx posts
-              >>= removeAllIndexHtml
+              >>= removeAtomIndexHtml
 
     match "templates/*" $ compile templateCompiler
 
@@ -147,9 +148,23 @@ removeIndexHtml item = return $ fmap (withUrls removeIndexStr) item
 
 -- | Replace url of the form *foo/bar/index.html by *foo/bar.
 --   This includes external urls.
-removeAllIndexHtml :: Item String -> Compiler (Item String)
-removeAllIndexHtml item = return $ fmap (withUrls removeIndexStr) item
+removeAtomIndexHtml :: Item String -> Compiler (Item String)
+removeAtomIndexHtml =
+    return . fmap ( renderTags' . id' . map link . TS.parseTags)
     where
+        renderTags' :: [TS.Tag String] -> String
+        renderTags' = TS.renderTagsOptions TS.renderOptions
+                          { TS.optEscape   = id
+                          , TS.optRawTag   = const True
+                          }
+        id' = reverse . fst . foldr f ([], False) . reverse
+        f t@(TS.TagOpen "id" _) (ts, False) = (t:ts, True)
+        f t@(TS.TagText url)  (ts, True)  = (TS.TagText (removeIndexStr url):ts, False)
+        f t                   (ts, b)     = (t:ts, b)
+        link (TS.TagOpen "link" a) = TS.TagOpen "link" $ map attr a
+        link t                     = t
+        attr ("href", v) = ("href", removeIndexStr v)
+        attr a           = a
         removeIndexStr :: String -> String
         removeIndexStr url =
             case splitFileName url of
