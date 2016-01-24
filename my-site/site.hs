@@ -21,7 +21,9 @@ import           System.FilePath.Posix (takeDirectory, splitFileName)
 main :: IO ()
 main = do
   currYear <- formatDateTime "%Y" <$> getCurrentTime
-  let pageCtx =
+  let pageRoot = "http://aherrmann.github.io"
+      pageCtx =
+          constField "pageRoot" pageRoot           `mappend`
           constField "currYear" currYear           `mappend`
           defaultContext
       postCtx =
@@ -95,7 +97,7 @@ main = do
                   , feedDescription = ""
                   , feedAuthorName  = "Andreas Herrmann"
                   , feedAuthorEmail = "andreash87@gmx.ch"
-                  , feedRoot        = "http://aherrmann.github.io"
+                  , feedRoot        = pageRoot
                   }
               feedCtx =
                   teasCtx                                  `mappend`
