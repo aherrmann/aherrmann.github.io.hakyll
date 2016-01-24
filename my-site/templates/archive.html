@@ -1,17 +1,4 @@
 <h1>Archive</h1>
 $for(posts)$
-<article>
-  <header id="post-list-header">
-    <h1><a href="$url$">$title$</a></h1>
-    <p>Posted on $date$ $if(author)$ by $author$ $endif$</p>
-  </header>
-  $if(abstract)$
-    $abstract$
-  $else$
-    $if(teaser)$
-      $teaser$
-    $endif$
-  $endif$
-  <a href="$url$">Read more &hellip;</a>
-</article>
+  $partial("templates/post-preview.html")$
 $endfor$

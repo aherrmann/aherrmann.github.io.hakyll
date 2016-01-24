@@ -1,19 +1,4 @@
 <h1>Recent Posts</h1>
 $for(posts)$
-<article>
-  <header id="post-list-header">
-    <h1><a href="$url$">$title$</a></h1>
-    <p>Posted on $date$ $if(author)$ by $author$ $endif$</p>
-  </header>
-  <p>
-  $if(abstract)$
-    $abstract$
-  $else$
-    $if(teaser)$
-      $teaser$
-    $endif$
-  $endif$
-  </p>
-  <p><a href="$url$">Read more &hellip;</a></p>
-</article>
+  $partial("templates/post-preview.html")$
 $endfor$

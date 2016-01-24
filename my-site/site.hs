@@ -90,7 +90,8 @@ main = do
     create [ "atom.xml" ] $ do
       route idRoute
       compile $ do
-          posts <- fmap (take 10) . recentFirst =<<
+          posts <- fmap (take 10) . recentFirst             =<<
+                       (return . getTeaserContents)         =<<
                        loadAllSnapshots "posts/*" "content"
           let feedConfig = FeedConfiguration
                   { feedTitle       = "Programming Blog"
@@ -155,6 +156,8 @@ removeIndexHtml item = return $ fmap (withUrls removeIndexStr) item
         isLocal :: String -> Bool
         isLocal uri        = not ("://" `isInfixOf` uri)
 
+
+--------------------------------------------------------------------------------
 -- | Replace url of the form *foo/bar/index.html by *foo/bar.
 --   This includes external urls.
 removeAtomIndexHtml :: Item String -> Compiler (Item String)
@@ -179,3 +182,10 @@ removeAtomIndexHtml =
             case splitFileName url of
                 (dir, "index.html") -> takeDirectory dir
                 _                   -> url
+
+
+--------------------------------------------------------------------------------
+getTeaserContents :: [Item String] -> [Item String]
+getTeaserContents = 
+  map $ \x -> itemSetBody (fromMaybe (itemBody x) $ 
+    needlePrefix "<!--more-->" $ itemBody x) x
