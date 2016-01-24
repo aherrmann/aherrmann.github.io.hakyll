@@ -32,6 +32,12 @@ titleH1Color = whiteColor
 titleH2Color :: Color
 titleH2Color = lightBlueColor
 
+menuItemColor :: Color
+menuItemColor = lightBlueColor
+
+menuItemBgColor :: Color
+menuItemBgColor = blueColor
+
 mainCss :: Css
 mainCss = do
     (h1 <> h2 <> h3 <> h4 <> h5 <> h6) ? a ?
@@ -47,7 +53,7 @@ mainCss = do
         backgroundColor titleBgColor
         borderRadius (px 0) (px 0) (px 20) (px 20)
         marginTop (px 0)
-        padding (px 20) (px 20) (px 20) (px 20)
+        padding (px 20) (px 20) (px 0) (px 20)
         textAlign $ alignSide sideCenter
     header # "#page-title" ? do
         display inlineBlock
@@ -61,3 +67,28 @@ mainCss = do
             fontSize (rem 3.0)
         (h2 <> (h2 ** star)) <? do
             color titleH2Color
+    nav # "#page-nav" ? do
+        display block
+        margin (px 0) auto (px 0) auto
+    nav # "#page-nav" |> ul ? do
+        listStyleType none
+        margin (px 0) (px 0) (px 0) (px 0)
+        padding (px 0) (px 0) (px 0) (px 0)
+        overflow hidden
+        fontSize (px 0)
+        li <? do
+            fontSize (rem 1.2)
+            display inlineBlock
+            backgroundColor menuItemBgColor
+            a <? do
+                color menuItemColor
+                display block
+                textAlign $ alignSide sideCenter
+                textDecoration none
+                padding (em 1) (em 1) (em 1) (em 1)
+        li # hover <? do
+            backgroundColor whiteColor
+        li # firstChild <? do
+            borderRadius (px 20) (px 0) (px 0) (px 0)
+        li # lastChild <? do
+            borderRadius (px 0) (px 20) (px 0) (px 0)
