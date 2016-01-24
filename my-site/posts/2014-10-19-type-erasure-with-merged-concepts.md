@@ -22,6 +22,8 @@ answer is to simply repeat the common parts. I think there has to be a better
 way. So, in this post I am going to explore how to merge type-erased
 interfaces. But first, let's quickly revise type-erasure.
 
+<!--more-->
+
 (Note, the C++ code examples are simplified in favour of readability. A link to
 working code is provided at the end of each section.)
 
