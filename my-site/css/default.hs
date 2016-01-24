@@ -163,7 +163,8 @@ pageHeaderCss = do
 pageFooterCss :: Css
 pageFooterCss = do
     footer # "#page-footer" ? do
-        textAlign $ alignSide sideCenter
         color footerColor
+        textAlign $ alignSide sideCenter
+        marginTop (rem 3)
         a # link ? color blueColor
         a # visited ? color lightBlueColor
