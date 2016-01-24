@@ -13,5 +13,6 @@ executable site
                   , pandoc
                   , tagsoup
                   , hakyll == 4.7.*
+                  , hakyll-contrib-hyphenation
   ghc-options:      -threaded
   default-language: Haskell2010
