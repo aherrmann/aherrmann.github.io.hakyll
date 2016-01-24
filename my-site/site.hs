@@ -25,6 +25,7 @@ main = do
           constField "currYear" currYear           `mappend`
           defaultContext
       postCtx =
+          directoryUrlField "url"                  `mappend`
           dateField "date" "%B %e, %Y"             `mappend`
           pageCtx
       teasCtx =
@@ -183,6 +184,17 @@ removeAtomIndexHtml =
                 (dir, "index.html") -> takeDirectory dir
                 _                   -> url
 
+
+--------------------------------------------------------------------------------
+-- | Transform a URL field to one that crops the /index.html in the end.
+directoryUrlField :: String -> Context a
+directoryUrlField key = mapContext removeIndexStr (urlField "url")
+    where
+        removeIndexStr :: String -> String
+        removeIndexStr url =
+            case splitFileName url of
+                (dir, "index.html") -> takeDirectory dir
+                _                   -> url
 
 --------------------------------------------------------------------------------
 getTeaserContents :: [Item String] -> [Item String]
