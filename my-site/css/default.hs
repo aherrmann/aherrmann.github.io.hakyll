@@ -71,6 +71,7 @@ mainCss = do
         borderRadius (px 10) (px 10) (px 10) (px 10)
         margin (px 10) (px 0) (px 10) (px 0)
         padding (px 20) (px 20) (px 20) (px 20)
+        textAlign justify
     (header # ".post-preview-header" <> header # "#post-header") ** h1 ? do
         margin (px 0) (px 0) (px 0) (px 0)
     section # "#sharing" ? do
