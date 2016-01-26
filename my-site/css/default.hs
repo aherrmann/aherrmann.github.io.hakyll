@@ -279,6 +279,9 @@ postSettings = do
         textAlign justify
     (".post-preview-header" <> "#post-header") ** h1 ? do
         margin (rem 0) (rem 0) (rem 0) (rem 0)
+        textAlign $ alignSide sideCenter
+    (".post-preview-header" <> "#post-header") ** p ? do
+        textAlign $ alignSide sideRight
     "#sharing" ? do
         float floatLeft
         display inlineBlock
