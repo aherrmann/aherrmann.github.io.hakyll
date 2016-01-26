@@ -266,6 +266,8 @@ postSettings = do
         borderRadius (rem 1.5) (rem 1.5) (rem 1.5) (rem 1.5)
         margin (rem 1) (rem 0) (rem 1) (rem 0)
         padding (rem 1.3) (rem 1.3) (rem 1.3) (rem 1.3)
+        query M.screen [M.maxWidth (px 570)] $ do
+            padding (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
         textAlign justify
     (".post-preview-header" <> "#post-header") ** h1 ? do
         margin (rem 0) (rem 0) (rem 0) (rem 0)
@@ -324,9 +326,10 @@ mainCss = do
         maxWidth (px 700)
         margin (rem 0) auto (rem 0) auto
         backgroundColor pageBackgroundColor
-        section <? do
-            marginLeft (rem 0.7)
-            marginRight (rem 0.7)
+        query M.screen [M.minWidth (px 571)] $
+            section <? do
+                marginLeft (rem 0.7)
+                marginRight (rem 0.7)
     ".section-title" ? do
         borderBottom solid (px 1) sectionTitleColor
         color sectionTitleColor
