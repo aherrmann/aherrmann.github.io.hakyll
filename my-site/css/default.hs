@@ -125,11 +125,14 @@ sectionTitleColor = pageBackgroundColor -. 50
 footerColor :: Color
 footerColor = color4 -. 70
 
-footerHoverColor :: Color
-footerHoverColor = footerColor -. 50
+footerLinkColor :: Color
+footerLinkColor = footerColor +. 20
 
 footerVisitedColor :: Color
-footerVisitedColor = footerColor +. 20
+footerVisitedColor = footerColor
+
+footerHoverColor :: Color
+footerHoverColor = footerColor -. 50
 
 headingColor :: Color
 headingColor = color1 -. 30
@@ -286,6 +289,6 @@ pageFooterCss = do
         textAlign $ alignSide sideCenter
         marginTop (rem 3)
         star ? color footerColor
-        a # link ? color footerColor
+        a ? color footerLinkColor
         a # visited ? color footerVisitedColor
         a # hover ? color footerHoverColor
