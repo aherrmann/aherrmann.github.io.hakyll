@@ -17,6 +17,15 @@ headings = h1 <> h2 <> h3 <> h4 <> h5 <> h6
 headings_ :: Selector
 headings_ = headings <> headings ** star
 
+a_ :: Selector
+a_ = a <> a ** star
+
+avisited_ :: Selector
+avisited_ = a # visited <> a # visited ** star
+
+ahover_ :: Selector
+ahover_ = a # hover <> a # hover ** star
+
 
 --------------------------------------------------------------------------------
 textStroke :: Color -> Css
@@ -126,10 +135,13 @@ headingColor :: Color
 headingColor = color1 -. 30
 
 linkColor :: Color
-linkColor = color3 -. 30
+linkColor = color2 -. 50
 
 linkVisitedColor :: Color
 linkVisitedColor = color1
+
+linkHoverColor :: Color
+linkHoverColor = color3 -. 30
 
 textColor :: Color
 textColor = black +. 50
@@ -138,16 +150,6 @@ textColor = black +. 50
 --------------------------------------------------------------------------------
 fontSettings :: Css
 fontSettings = do
-    star ? do
-        fontFamily ["Merriweather", "Georgia"] [serif]
-        color textColor
-    a ? do
-        color linkColor
-        textDecoration none
-    a # visited ? do
-        color linkVisitedColor
-    code <> code ** star ? do
-        fontFamily ["Droid Sans Mono"] []
     headings_ ? do
         color $ headingColor
         fontFamily ["Merriweather Sans"] [sansSerif]
@@ -155,6 +157,18 @@ fontSettings = do
     nav ** star ? do
         fontFamily ["Merriweather Sans"] [sansSerif]
         fontWeight bold
+    a_ ? do
+        color linkColor
+        textDecoration none
+    avisited_ ? do
+        color linkVisitedColor
+    ahover_ ? do
+        color linkHoverColor
+    code <> code ** star ? do
+        fontFamily ["Droid Sans Mono"] []
+    star ? do
+        fontFamily ["Merriweather", "Georgia"] [serif]
+        color textColor
 
 
 --------------------------------------------------------------------------------
