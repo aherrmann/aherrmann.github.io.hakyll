@@ -59,17 +59,23 @@ color5 = "#EB7260"
 pageBackgroundColor :: Color
 pageBackgroundColor = color4
 
-sectionTitleColor :: Color
-sectionTitleColor = pageBackgroundColor -. 50
+headerBackgroundColor :: Color
+headerBackgroundColor = color1
 
-sectionBackgroundColor :: Color
-sectionBackgroundColor = pageBackgroundColor -. 10
-
-sectionBackground :: Css
-sectionBackground = do
-    backgroundColor sectionBackgroundColor
+headerBackground :: Css
+headerBackground = do
+    backgroundColor headerBackgroundColor
     background $
-        vGradient (sectionBackgroundColor -. 10) sectionBackgroundColor
+        vGradient (headerBackgroundColor -. 10) headerBackgroundColor
+
+headerTitleColor :: Color
+headerTitleColor = color4
+
+headerTitleBorderColor :: Color
+headerTitleBorderColor = color5
+
+headerSubtitleColor :: Color
+headerSubtitleColor = color2
 
 menuBackgroundColor :: Color
 menuBackgroundColor = color4 -. 20
@@ -95,23 +101,17 @@ menuHoverBackground = do
 menuItemHoverColor :: Color
 menuItemHoverColor = color1 -. 20
 
-headerBackgroundColor :: Color
-headerBackgroundColor = color1
+sectionBackgroundColor :: Color
+sectionBackgroundColor = pageBackgroundColor -. 10
 
-headerBackground :: Css
-headerBackground = do
-    backgroundColor headerBackgroundColor
+sectionBackground :: Css
+sectionBackground = do
+    backgroundColor sectionBackgroundColor
     background $
-        vGradient (headerBackgroundColor -. 10) headerBackgroundColor
+        vGradient (sectionBackgroundColor -. 10) sectionBackgroundColor
 
-headerTitleColor :: Color
-headerTitleColor = color4
-
-headerTitleBorderColor :: Color
-headerTitleBorderColor = color5
-
-headerSubtitleColor :: Color
-headerSubtitleColor = color2
+sectionTitleColor :: Color
+sectionTitleColor = pageBackgroundColor -. 50
 
 footerColor :: Color
 footerColor = color4 -. 70
