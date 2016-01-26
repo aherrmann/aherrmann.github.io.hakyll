@@ -45,12 +45,26 @@ menuItemBgColor = blueColor
 footerColor :: Color
 footerColor = lightBlueColor
 
+headings :: Selector
+headings = h1 <> h2 <> h3 <> h4 <> h5 <> h6
+
+headings_ :: Selector
+headings_ = headings <> headings ** star
+
 
 --------------------------------------------------------------------------------
 mainCss :: Css
 mainCss = do
-    (h1 <> h2 <> h3 <> h4 <> h5 <> h6) ? a ?
+    star ? do
+        fontFamily ["Merriweather", "Georgia"] [serif]
+    code <> code ** star ? do
+        fontFamily ["Droid Sans Mono"] []
+    headings_ ? do
+        fontFamily ["Merriweather Sans"] [sansSerif]
         textDecoration none
+    nav ** star ? do
+        fontFamily ["Merriweather Sans"] [sansSerif]
+        fontWeight bold
     body ? do
         maxWidth (px 700)
         margin (px 0) auto (px 0) auto
@@ -62,6 +76,7 @@ mainCss = do
         borderBottom solid (px 1) lightBlueColor
         color lightBlueColor
         fontSize (rem 1.6)
+        fontStyle italic
         marginLeft (px 20)
         marginRight (px 20)
         paddingTop (rem 1)
@@ -126,7 +141,6 @@ pageHeaderCss = do
         textAlign $ alignSide sideRight
         (h1 <> (h1 ** star)) <? do
             color titleH1Color
-            fontFamily ["verdana"] [sansSerif]
             fontSize (rem 3.0)
         (h2 <> (h2 ** star)) <? do
             color titleH2Color
