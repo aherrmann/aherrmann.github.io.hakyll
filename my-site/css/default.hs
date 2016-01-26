@@ -175,95 +175,38 @@ fontSettings = do
 
 
 --------------------------------------------------------------------------------
-mainCss :: Css
-mainCss = do
-    fontSettings
-    pageHeaderCss
-    pageFooterCss
-    body ? do
-        maxWidth (px 700)
-        margin (px 0) auto (px 0) auto
-        backgroundColor pageBackgroundColor
-        section <? do
-            marginLeft (px 10)
-            marginRight (px 10)
-    h1 # ".section-title" ? do
-        borderBottom solid (px 1) sectionTitleColor
-        color sectionTitleColor
-        fontSize (rem 1.6)
-        fontStyle italic
-        marginLeft (px 20)
-        marginRight (px 20)
-        paddingTop (rem 1)
-    article # ".post-preview" <> article # "#post" ? do
-        sectionBackground
-        borderRadius (px 10) (px 10) (px 10) (px 10)
-        margin (px 10) (px 0) (px 10) (px 0)
-        padding (px 20) (px 20) (px 20) (px 20)
-        textAlign justify
-    (header # ".post-preview-header" <> header # "#post-header") ** h1 ? do
-        margin (px 0) (px 0) (px 0) (px 0)
-    section # "#sharing" ? do
-        float floatLeft
-        display inlineBlock
-        margin (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
-    nav # "#post-nav" |> ul ? do
-        display block
-        fontSize (px 0)
-        listStyleType none
-        margin (px 0) (px 0) (px 0) (px 0)
-        overflow hidden
-        padding (px 0) (px 0) (px 0) (px 0)
-        textAlign $ alignSide sideRight
-        li <? do
-            fontSize (rem 1.2)
-            display inlineBlock
-            menuBackground
-            borderRadius (em 0.5) (em 0.5) (em 0.5) (em 0.5)
-            margin (rem 1) (rem 0) (rem 1) (rem 1)
-            a <? do
-                color menuItemColor
-                display block
-                textAlign $ alignSide sideCenter
-                textDecoration none
-                padding (em 0.5) (em 0.5) (em 0.5) (em 0.5)
-        li # hover <? do
-            menuHoverBackground
-            a <? do
-                color menuItemHoverColor
-
-
---------------------------------------------------------------------------------
-pageHeaderCss :: Css
-pageHeaderCss = do
+pageHeaderSettings :: Css
+pageHeaderSettings = do
     header # "#page-header" ? do
         headerBackground
-        borderRadius (px 0) (px 0) (px 20) (px 20)
-        marginTop (px 0)
-        padding (px 20) (px 20) (px 0) (px 20)
+        borderRadius (rem 0) (rem 0) (rem 4) (rem 4)
+        marginTop (rem 0)
+        padding (rem 0) (rem 2) (rem 0) (rem 2)
         textAlign $ alignSide sideCenter
     header # "#page-title" ? do
         display inlineBlock
         width auto
         height auto
-        margin (px 0) auto (px 0) auto
+        margin (rem 0) auto (rem 0) auto
         textAlign $ alignSide sideRight
         (h1 <> (h1 ** star)) <? do
             color headerTitleColor
+            margin (rem 3) (rem 0) (rem 1) (rem 0)
             textStroke headerTitleBorderColor
             fontSmooth
             fontSize (rem 4.0)
         (h2 <> (h2 ** star)) <? do
             color headerSubtitleColor
+            margin (rem 0) (rem 0) (rem 2) (rem 0)
     nav # "#page-nav" ? do
         display block
-        margin (px 0) auto (px 0) auto
+        margin (rem 0) auto (rem 0) auto
     nav # "#page-nav" |> ul ? do
         listStyleType none
-        margin (px 0) (px 0) (px 0) (px 0)
-        padding (px 0) (px 0) (px 0) (px 0)
+        margin (rem 0) (rem 0) (rem 0) (rem 0)
+        padding (rem 0) (rem 0) (rem 0) (rem 0)
         overflow hidden
-        fontSize (px 0)
+        fontSize (rem 0)
         li <? do
             fontSize (rem 1.2)
             display inlineBlock
@@ -273,18 +216,18 @@ pageHeaderCss = do
                 display block
                 textAlign $ alignSide sideCenter
                 textDecoration none
-                padding (em 1) (em 1) (em 1) (em 1)
+                padding (rem 1.2) (rem 1.2) (rem 1.2) (rem 1.2)
         li # hover <? do
             menuHoverBackground
         li # firstChild <? do
-            borderRadius (px 20) (px 0) (px 0) (px 0)
+            borderRadius (rem 2) (rem 0) (rem 0) (rem 0)
         li # lastChild <? do
-            borderRadius (px 0) (px 20) (px 0) (px 0)
+            borderRadius (rem 0) (rem 2) (rem 0) (rem 0)
 
 
 --------------------------------------------------------------------------------
-pageFooterCss :: Css
-pageFooterCss = do
+pageFooterSettings :: Css
+pageFooterSettings = do
     footer # "#page-footer" ? do
         textAlign $ alignSide sideCenter
         marginTop (rem 3)
@@ -292,3 +235,62 @@ pageFooterCss = do
         a ? color footerLinkColor
         a # visited ? color footerVisitedColor
         a # hover ? color footerHoverColor
+
+
+--------------------------------------------------------------------------------
+mainCss :: Css
+mainCss = do
+    fontSettings
+    pageHeaderSettings
+    pageFooterSettings
+    body ? do
+        maxWidth (px 700)
+        margin (rem 0) auto (rem 0) auto
+        backgroundColor pageBackgroundColor
+        section <? do
+            marginLeft (rem 0.7)
+            marginRight (rem 0.7)
+    h1 # ".section-title" ? do
+        borderBottom solid (px 1) sectionTitleColor
+        color sectionTitleColor
+        fontSize (rem 1.6)
+        fontStyle italic
+        marginLeft (rem 1.5)
+        marginRight (rem 1.5)
+        paddingTop (rem 1)
+    article # ".post-preview" <> article # "#post" ? do
+        sectionBackground
+        borderRadius (rem 1.5) (rem 1.5) (rem 1.5) (rem 1.5)
+        margin (rem 1) (rem 0) (rem 1) (rem 0)
+        padding (rem 1.3) (rem 1.3) (rem 1.3) (rem 1.3)
+        textAlign justify
+    (header # ".post-preview-header" <> header # "#post-header") ** h1 ? do
+        margin (rem 0) (rem 0) (rem 0) (rem 0)
+    section # "#sharing" ? do
+        float floatLeft
+        display inlineBlock
+        margin (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
+    nav # "#post-nav" |> ul ? do
+        display block
+        fontSize (rem 0)
+        listStyleType none
+        margin (rem 0) (rem 0) (rem 0) (rem 0)
+        overflow hidden
+        padding (rem 0) (rem 0) (rem 0) (rem 0)
+        textAlign $ alignSide sideRight
+        li <? do
+            fontSize (rem 1.2)
+            display inlineBlock
+            menuBackground
+            borderRadius (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
+            margin (rem 1) (rem 0) (rem 1) (rem 1)
+            a <? do
+                color menuItemColor
+                display block
+                textAlign $ alignSide sideCenter
+                textDecoration none
+                padding (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
+        li # hover <? do
+            menuHoverBackground
+            a <? do
+                color menuItemHoverColor
