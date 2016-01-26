@@ -3,7 +3,7 @@ import           Clay
 import           Clay.Stylesheet (key)
 import           Data.Monoid
 import qualified Data.Text.Lazy.IO as T
-import           Prelude hiding ((**),rem)
+import           Prelude hiding ((**), div, rem)
 
 main :: IO ()
 main = T.putStr $ renderWith pretty [] mainCss
@@ -28,6 +28,21 @@ ahover_ = a # hover <> a # hover ** star
 
 
 --------------------------------------------------------------------------------
+bevel :: Css
+bevel = "box-shadow" -: "0 1px 2px #fff,\n\
+                        \0 -1px 1px #666,\n\
+                        \inset 0 -1px 1px rgba(0,0,0,0.5),\n\
+                        \inset 0 1px 1px rgba(255,255,255,0.8),\n\
+                        \1px 0 2px #fff,\n\
+                        \-1px 0 1px #666,\n\
+                        \inset -1px 0 1px rgba(0,0,0,0.5),\n\
+                        \inset 1px 0 1px rgba(255,255,255,0.8);"
+
+fontSmooth :: Css
+fontSmooth = do
+    "-webkit-font-smoothing" -: "subpixel-antialiased" -- "antialiased"
+    "-moz-osx-font-smoothing" -: "grayscale"
+
 textStroke :: Color -> Css
 textStroke c = do
     key "-webkit-text-stroke" $ value (px 3) <> " " <> value c
@@ -40,11 +55,6 @@ textStroke c = do
     xys = [ ((-1),    1), (0,    2), (1,    1)
           , ((-2),    0),            (2,    0)
           , ((-1), (-1)), (0, (-2)), (1, (-1)) ]
-
-fontSmooth :: Css
-fontSmooth = do
-    "-webkit-font-smoothing" -: "subpixel-antialiased" -- "antialiased"
-    "-moz-osx-font-smoothing" -: "grayscale"
 
 
 --------------------------------------------------------------------------------
@@ -136,6 +146,9 @@ footerHoverColor = footerColor -. 50
 
 headingColor :: Color
 headingColor = color1 -. 30
+
+codeBackgroundColor :: Color
+codeBackgroundColor = pageBackgroundColor
 
 linkColor :: Color
 linkColor = color2 -. 50
@@ -278,12 +291,23 @@ postSettings = do
 
 
 --------------------------------------------------------------------------------
+codeSettings :: Css
+codeSettings = do
+    pre ? do
+        backgroundColor codeBackgroundColor
+        bevel
+        borderRadius (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
+        padding (rem 0.5) (rem 0.5) (rem 0.7) (rem 0.5)
+
+
+--------------------------------------------------------------------------------
 mainCss :: Css
 mainCss = do
     fontSettings
     pageHeaderSettings
     pageFooterSettings
     postSettings
+    codeSettings
     body ? do
         maxWidth (px 700)
         margin (rem 0) auto (rem 0) auto
