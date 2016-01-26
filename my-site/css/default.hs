@@ -167,6 +167,14 @@ textColor = black +. 50
 --------------------------------------------------------------------------------
 fontSettings :: Css
 fontSettings = do
+    h1 <> h1 ** star ? do
+        fontSize (rem 2.0)
+        query M.screen [M.maxWidth (px 600)] $ do
+            fontSize (rem 1.75)
+        query M.screen [M.maxWidth (px 500)] $ do
+            fontSize (rem 1.5)
+        query M.screen [M.maxWidth (px 400)] $ do
+            fontSize (rem 1.4)
     headings_ ? do
         color $ headingColor
         fontFamily ["Merriweather Sans"] [sansSerif]
