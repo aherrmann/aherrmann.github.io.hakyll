@@ -298,6 +298,10 @@ codeSettings = do
         bevel
         borderRadius (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
         padding (rem 0.5) (rem 0.5) (rem 0.7) (rem 0.5)
+    p ** code ? do
+        backgroundColor codeBackgroundColor
+        borderRadius (rem 0.3) (rem 0.3) (rem 0.3) (rem 0.3)
+        padding (rem 0) (rem 0.2) (rem 0) (rem 0.2)
 
 
 --------------------------------------------------------------------------------
