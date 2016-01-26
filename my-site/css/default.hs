@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 import           Clay
+import qualified Clay.Media as M
 import           Clay.Stylesheet (key)
 import           Data.Monoid
 import qualified Data.Text.Lazy.IO as T
@@ -190,6 +191,8 @@ fontSettings = do
 --------------------------------------------------------------------------------
 pageHeaderSettings :: Css
 pageHeaderSettings = do
+    query M.screen [M.maxWidth (px 570)] $
+        ".menu-text" ? display none
     "#page-header" ? do
         headerBackground
         borderRadius (rem 0) (rem 0) (rem 4) (rem 4)
@@ -206,8 +209,13 @@ pageHeaderSettings = do
             color headerTitleColor
             fontSmooth
             fontSize (rem 4.0)
+            query M.screen [M.maxWidth (px 612)] $
+                fontSize (rem 3.0)
+            query M.screen [M.maxWidth (px 480)] $
+                fontSize (rem 2.2)
+            query M.screen [M.minWidth (px 481)] $
+                textStroke headerTitleBorderColor
             margin (rem 3) (rem 0) (rem 1) (rem 0)
-            textStroke headerTitleBorderColor
         (h2 <> (h2 ** star)) <? do
             color headerSubtitleColor
             margin (rem 0) (rem 0) (rem 2) (rem 0)

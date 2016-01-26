@@ -45,6 +45,10 @@ main = do
       route   idRoute
       compile copyFileCompiler
 
+    match "fonts/*" $ do
+      route   idRoute
+      compile copyFileCompiler
+
     match "css/*.hs" $ do
       route   $ setExtension "css"
       compile $ getResourceString
