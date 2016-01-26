@@ -84,7 +84,7 @@ menuItemColor :: Color
 menuItemColor = color1 -. 30
 
 menuHoverBackgroundColor :: Color
-menuHoverBackgroundColor = color2
+menuHoverBackgroundColor = color3
 
 menuHoverBackground :: Css
 menuHoverBackground = do
@@ -111,7 +111,7 @@ headerTitleBorderColor :: Color
 headerTitleBorderColor = color5
 
 headerSubtitleColor :: Color
-headerSubtitleColor = color3
+headerSubtitleColor = color2
 
 footerColor :: Color
 footerColor = color4 -. 70
@@ -122,15 +122,34 @@ footerHoverColor = footerColor -. 50
 footerVisitedColor :: Color
 footerVisitedColor = footerColor +. 20
 
+headingColor :: Color
+headingColor = color1 -. 30
+
+linkColor :: Color
+linkColor = color3 -. 30
+
+linkVisitedColor :: Color
+linkVisitedColor = color1
+
+textColor :: Color
+textColor = black +. 50
+
 
 --------------------------------------------------------------------------------
 fontSettings :: Css
 fontSettings = do
     star ? do
         fontFamily ["Merriweather", "Georgia"] [serif]
+        color textColor
+    a ? do
+        color linkColor
+        textDecoration none
+    a # visited ? do
+        color linkVisitedColor
     code <> code ** star ? do
         fontFamily ["Droid Sans Mono"] []
     headings_ ? do
+        color $ headingColor
         fontFamily ["Merriweather Sans"] [sansSerif]
         textDecoration none
     nav ** star ? do
@@ -250,9 +269,9 @@ pageHeaderCss = do
 pageFooterCss :: Css
 pageFooterCss = do
     footer # "#page-footer" ? do
-        color footerColor
         textAlign $ alignSide sideCenter
         marginTop (rem 3)
+        star ? color footerColor
         a # link ? color footerColor
         a # visited ? color footerVisitedColor
         a # hover ? color footerHoverColor
