@@ -167,14 +167,6 @@ textColor = black +. 50
 --------------------------------------------------------------------------------
 fontSettings :: Css
 fontSettings = do
-    h1 <> h1 ** star ? do
-        fontSize (rem 2.0)
-        query M.screen [M.maxWidth (px 600)] $ do
-            fontSize (rem 1.75)
-        query M.screen [M.maxWidth (px 500)] $ do
-            fontSize (rem 1.5)
-        query M.screen [M.maxWidth (px 400)] $ do
-            fontSize (rem 1.4)
     headings_ ? do
         color $ headingColor
         fontFamily ["Merriweather Sans"] [sansSerif]
@@ -276,7 +268,8 @@ postSettings = do
         padding (rem 1.3) (rem 1.3) (rem 1.3) (rem 1.3)
         query M.screen [M.maxWidth (px 570)] $ do
             padding (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
-        textAlign justify
+        p <> p ** star ? do
+            textAlign justify
     (".post-preview-header" <> "#post-header") ** h1 ? do
         margin (rem 0) (rem 0) (rem 0) (rem 0)
         textAlign $ alignSide sideCenter
