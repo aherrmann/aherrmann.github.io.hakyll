@@ -7,8 +7,8 @@ import qualified Data.Text.Lazy.IO as T
 import           Prelude hiding ((**), div, rem)
 
 main :: IO ()
-main = T.putStr $ renderWith pretty [] mainCss
--- main = T.putStr $ renderWith compact [] mainCss
+-- main = T.putStr $ renderWith pretty [] mainCss
+main = T.putStr $ renderWith compact [] mainCss
 
 
 --------------------------------------------------------------------------------
