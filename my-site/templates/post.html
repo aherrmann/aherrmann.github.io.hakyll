@@ -8,7 +8,11 @@
 </article>
 <section id="sharing">
   <script type="text/javascript">
+    $if(reddit_url)$
+    reddit_url = "$reddit_url$";
+    $else$
     reddit_url = "$pageRoot$$url$";
+    $endif$
     reddit_title = "$title$";
   </script>
   <script type="text/javascript" src="//www.redditstatic.com/button/button3.js"></script>

@@ -2,6 +2,7 @@
 title: Type Erasure with Merged Concepts
 category: programming
 tags: [C++]
+reddit_url: http://aherrmann.github.io/programming/2014/10/19/type-erasure-with-merged-concepts/
 ---
 
 Two days ago, I watched a very interesting talk by Zach Laine: [Pragmatic Type
