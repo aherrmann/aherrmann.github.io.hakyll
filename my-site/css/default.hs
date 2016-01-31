@@ -148,6 +148,9 @@ footerHoverColor = footerColor -. 50
 headingColor :: Color
 headingColor = color1 -. 30
 
+postDateColor :: Color
+postDateColor = color4 -. 130
+
 codeBackgroundColor :: Color
 codeBackgroundColor = pageBackgroundColor
 
@@ -272,6 +275,8 @@ postSettings = do
         margin (rem 0) (rem 0) (rem 0) (rem 0)
         textAlign $ alignSide sideCenter
     (".post-preview-header" <> "#post-header") ** p ? do
+        color postDateColor
+        fontStyle italic
         textAlign $ alignSide sideRight
     "#sharing" ? do
         float floatLeft
