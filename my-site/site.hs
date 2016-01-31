@@ -8,7 +8,6 @@ import           Data.Monoid (mappend)
 import           Text.Pandoc.Options (writerHtml5)
 import qualified Text.HTML.TagSoup as TS
 import           Hakyll
-import           Hakyll.Contrib.Hyphenation (hyphenateHtml, english_US)
 import           System.FilePath.Posix (takeDirectory, splitFileName)
 
 -- TODO: Decide on one of these options.
@@ -67,7 +66,6 @@ main = do
     match "posts/*" $ do
       route   postRoute
       compile $ pandocCompiler
-          >>= hyphenateHtml english_US
           >>= loadAndApplyTemplate "templates/post-content.html" postCtx
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/post.html"         postCtx
