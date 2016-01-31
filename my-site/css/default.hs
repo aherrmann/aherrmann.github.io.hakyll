@@ -158,7 +158,7 @@ linkColor :: Color
 linkColor = color2 -. 50
 
 linkVisitedColor :: Color
-linkVisitedColor = color1
+linkVisitedColor = color1 +. 30
 
 linkHoverColor :: Color
 linkHoverColor = color3 -. 30
