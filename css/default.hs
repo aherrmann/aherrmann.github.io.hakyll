@@ -154,6 +154,9 @@ postDateColor = color4 -. 130
 codeBackgroundColor :: Color
 codeBackgroundColor = pageBackgroundColor
 
+inlineCodeColor :: Color
+inlineCodeColor = textColor +. 30
+
 linkColor :: Color
 linkColor = color2 -. 50
 
@@ -316,8 +319,8 @@ codeSettings = do
         borderRadius (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
         padding (rem 0.5) (rem 0.5) (rem 0.7) (rem 0.5)
     p ** code ? do
-        backgroundColor codeBackgroundColor
         borderRadius (rem 0.3) (rem 0.3) (rem 0.3) (rem 0.3)
+        color inlineCodeColor
         padding (rem 0) (rem 0.2) (rem 0) (rem 0.2)
 
 
