@@ -244,6 +244,8 @@ pageHeaderSettings = do
                 textAlign $ alignSide sideCenter
                 textDecoration none
                 padding (rem 1.2) (rem 1.2) (rem 1.2) (rem 1.2)
+            a <> a ** star <? do
+                color menuItemColor
             a # hover <? do
                 menuHoverBackground
         li # firstChild <> li # firstChild ** star ? do
