@@ -248,10 +248,11 @@ pageFooterSettings = do
     footer # "#page-footer" ? do
         marginTop (rem 3)
         textAlign $ alignSide sideCenter
-        star ? color footerColor
-        a ? color footerLinkColor
-        a # visited ? color footerVisitedColor
-        a # hover ? color footerHoverColor
+        p <? do
+            color footerColor
+            a <? color footerLinkColor
+            a # visited <? color footerVisitedColor
+            a # hover <? color footerHoverColor
 
 
 --------------------------------------------------------------------------------
