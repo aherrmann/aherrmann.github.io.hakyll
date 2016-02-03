@@ -4,7 +4,7 @@ import qualified Clay.Media as M
 import           Clay.Stylesheet (key)
 import           Data.Monoid
 import qualified Data.Text.Lazy.IO as T
-import           Prelude hiding ((**), div, rem)
+import           Prelude hiding ((**), div, rem, span)
 
 main :: IO ()
 -- main = T.putStr $ renderWith pretty [] mainCss
@@ -211,7 +211,7 @@ pageHeaderSettings = do
         height auto
         margin (rem 0) auto (rem 0) auto
         textAlign $ alignSide sideRight
-        (h1 <> (h1 ** star)) <? do
+        h1 |> a <? do
             color headerTitleColor
             fontSmooth
             fontSize (rem 4.0)
@@ -222,7 +222,7 @@ pageHeaderSettings = do
             query M.screen [M.minWidth (px 481)] $
                 textStroke headerTitleBorderColor
             margin (rem 3) (rem 0) (rem 1) (rem 0)
-        (h2 <> (h2 ** star)) <? do
+        h2 <? do
             color headerSubtitleColor
             margin (rem 0) (rem 0) (rem 2) (rem 0)
     "#page-nav" ? do
@@ -237,20 +237,20 @@ pageHeaderSettings = do
         li <? do
             fontSize (rem 1.2)
             display inlineBlock
-            menuBackground
             a <? do
+                menuBackground
                 color menuItemColor
                 display block
                 textAlign $ alignSide sideCenter
                 textDecoration none
                 padding (rem 1.2) (rem 1.2) (rem 1.2) (rem 1.2)
-            a <> a ** star <? do
+            a <> (a |> span) <? do
                 color menuItemColor
             a # hover <? do
                 menuHoverBackground
-        li # firstChild <> li # firstChild ** star ? do
+        li # firstChild |> a ? do
             borderRadius (rem 2) (rem 0) (rem 0) (rem 0)
-        li # lastChild <> li # lastChild ** star ? do
+        li # lastChild |> a ? do
             borderRadius (rem 0) (rem 2) (rem 0) (rem 0)
 
 
