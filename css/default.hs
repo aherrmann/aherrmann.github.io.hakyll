@@ -15,18 +15,6 @@ main = T.putStr $ renderWith compact [] mainCss
 headings :: Selector
 headings = h1 <> h2 <> h3 <> h4 <> h5 <> h6
 
-headings_ :: Selector
-headings_ = headings <> headings ** star
-
-a_ :: Selector
-a_ = a <> a ** star
-
-avisited_ :: Selector
-avisited_ = a # visited <> a # visited ** star
-
-ahover_ :: Selector
-ahover_ = a # hover <> a # hover ** star
-
 
 --------------------------------------------------------------------------------
 bevel :: Css
@@ -173,21 +161,21 @@ textColor = black +. 50
 --------------------------------------------------------------------------------
 fontSettings :: Css
 fontSettings = do
-    headings_ ? do
+    headings <> headings |> a ? do
         color $ headingColor
         fontFamily ["Merriweather Sans"] [sansSerif]
         textDecoration none
-    nav ** star ? do
+    nav ** (a <> span) ? do
         fontFamily ["Merriweather Sans"] [sansSerif]
         fontWeight bold
-    a_ ? do
+    a <> a |> span ? do
         color linkColor
         textDecoration none
-    avisited_ ? do
+    a # visited <> a # visited |> span ? do
         color linkVisitedColor
-    ahover_ ? do
+    a # hover <> a # hover |> span ? do
         color linkHoverColor
-    code <> code ** star ? do
+    code <> code |> span ? do
         fontFamily ["Droid Sans Mono"] []
     star ? do
         fontFamily ["Merriweather", "Georgia"] [serif]
