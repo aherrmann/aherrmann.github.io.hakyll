@@ -276,10 +276,10 @@ postSettings = do
         padding (rem 1.3) (rem 1.3) (rem 1.3) (rem 1.3)
         query M.screen [M.maxWidth (px 570)] $ do
             padding (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
-    (".post-preview-header" <> "#post-header") ** h1 ? do
+    (".post-preview-header" <> "#post-header") |> h1 ? do
         margin (rem 0) (rem 0) (rem 0) (rem 0)
         textAlign $ alignSide sideCenter
-    (".post-preview-header" <> "#post-header") ** p ? do
+    (".post-preview-header" <> "#post-header") |> p ? do
         color postDateColor
         fontStyle italic
         textAlign $ alignSide sideRight
