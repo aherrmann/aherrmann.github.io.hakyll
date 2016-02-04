@@ -10,9 +10,10 @@ executable site
                   , containers
                   , datetime
                   , filepath
+                  , hyphenation
                   , pandoc
+                  , split
                   , tagsoup
                   , hakyll == 4.7.*
-                  , hakyll-contrib-hyphenation
   ghc-options:      -threaded
   default-language: Haskell2010

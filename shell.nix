@@ -7,7 +7,7 @@ let
     datetime
     ghc-mod
     hakyll
-    hakyll-contrib-hyphenation
+    hyphenation
   ]);
 in
 

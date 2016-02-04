@@ -1,12 +1,15 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
+import           Data.Char (isSpace)
 import           Data.DateTime (formatDateTime, getCurrentTime)
-import           Data.List (isInfixOf)
+import           Data.List (intercalate, isInfixOf)
+import           Data.List.Split (split, condense, whenElt)
 import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid (mappend)
 import           Text.Pandoc.Options (writerHtml5)
 import qualified Text.HTML.TagSoup as TS
+import           Text.Hyphenation (english_US, hyphenate)
 import           Hakyll
 import           System.FilePath.Posix (takeDirectory, splitFileName)
 
@@ -165,8 +168,35 @@ directoryUrlField key = mapContext removeIndexStr (urlField "url")
                 (dir, "index.html") -> takeDirectory dir
                 _                   -> url
 
+
 --------------------------------------------------------------------------------
 getTeaserContents :: [Item String] -> [Item String]
 getTeaserContents = 
   map $ \x -> itemSetBody (fromMaybe (itemBody x) $ 
     needlePrefix "<!--more-->" $ itemBody x) x
+
+
+--------------------------------------------------------------------------------
+transformTextExcept :: String -> (String -> String) -> String -> String
+transformTextExcept tag f = TS.renderTags . go 0 . TS.parseTags where
+    go _   []     = []
+    go 0 (TS.TagText t:xs)       = TS.TagText (f t):go 0 xs
+    go l (x@(TS.TagOpen _ _):xs) = if x TS.~== TS.TagOpen tag []
+                                       then x:go (l + 1) xs
+                                       else x:go l xs
+    go l (x@(TS.TagClose _):xs)  = if x TS.~== TS.TagClose tag
+                                       then x:go (l - 1) xs
+                                       else x:go l xs
+    go l (x:xs)                  = x:go l xs
+
+
+--------------------------------------------------------------------------------
+hyphenateItem :: Item String -> Compiler (Item String)
+hyphenateItem item = return
+                   $ flip itemSetBody item
+                   $ transformTextExcept "code" hy (itemBody item)
+  where
+    hy = concat
+       . map (intercalate hyphen . hyphenate english_US)
+       . (split . condense . whenElt) isSpace
+    hyphen = "\x00ad"
