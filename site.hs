@@ -6,8 +6,7 @@ import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid (mappend)
 import           Text.Pandoc.Options (writerHtml5)
-import qualified Text.XML.Light as X
-import qualified Text.XML.Light.Cursor as XC
+import qualified Text.HTML.TagSoup as TS
 import           Hakyll
 import           System.FilePath.Posix (takeDirectory, splitFileName)
 
@@ -166,30 +165,8 @@ directoryUrlField key = mapContext removeIndexStr (urlField "url")
                 (dir, "index.html") -> takeDirectory dir
                 _                   -> url
 
-
 --------------------------------------------------------------------------------
 getTeaserContents :: [Item String] -> [Item String]
 getTeaserContents = 
   map $ \x -> itemSetBody (fromMaybe (itemBody x) $ 
     needlePrefix "<!--more-->" $ itemBody x) x
-
-
---------------------------------------------------------------------------------
-data HyphenatorPos = HyAbove | HyBetween | HyBelow deriving (Eq, Ord, Show)
-
-
---------------------------------------------------------------------------------
-hyphenateTextBetween :: (X.Element -> Bool)
-                     -> (X.Element -> Bool)
-                     -> Content
-                     -> Content
-hyphenateTextBetween below above c = dive HyAbove $ X.fromContent c where
-    dive :: HyphenatorPos -> Cursor -> Cursor
-    dive p@HyAbove cur = let p' = newPos p cur
-                          in -- TODO
-    newPos HyAbove   cur = case current cur of
-                               Elem e -> if below e then HyBetween else HyAbove
-                               _      -> HyAbove
-    newPos HyBetween cur = case current cur of
-                               Elem e -> if above e then HyBelow else HyBetween
-                               _      -> HyAbove

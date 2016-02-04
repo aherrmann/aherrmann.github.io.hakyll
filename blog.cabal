@@ -11,8 +11,8 @@ executable site
                   , datetime
                   , filepath
                   , pandoc
+                  , tagsoup
                   , hakyll == 4.7.*
                   , hakyll-contrib-hyphenation
-                  , xml
   ghc-options:      -threaded
   default-language: Haskell2010
