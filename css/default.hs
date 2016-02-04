@@ -268,7 +268,7 @@ postSettings = do
         padding (rem 1.3) (rem 1.3) (rem 1.3) (rem 1.3)
         query M.screen [M.maxWidth (px 570)] $ do
             padding (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
-        p ? do
+        p <> li ? do
             textAlign justify
     (".post-preview-header" <> "#post-header") |> h1 ? do
         margin (rem 0) (rem 0) (rem 0) (rem 0)
