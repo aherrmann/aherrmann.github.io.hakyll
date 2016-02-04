@@ -199,5 +199,5 @@ hyphenateItem item = return
   where
     hy = concat
        . map (intercalate hyphen . hyphenate english_US)
-       . (split . condense . whenElt) isSpace
+       . (split . condense . whenElt) (\c -> isSpace c || c == '-')
     hyphen = "\x00ad"
