@@ -69,6 +69,7 @@ main = do
     match "posts/*" $ do
       route   postRoute
       compile $ pandocCompiler
+          >>= hyphenateItem
           >>= loadAndApplyTemplate "templates/post-content.html" postCtx
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/post.html"         postCtx
@@ -78,7 +79,7 @@ main = do
     match "archive.html" $ do
       route   $ asIndexRoute "html"
       compile $ do
-          posts <- recentFirst =<< loadAll "posts/*"
+          posts <- recentFirst =<< loadAllSnapshots "posts/*" "content"
           let archiveCtx =
                   directoryUrlField "url"                  `mappend`
                   listField "posts" teasCtx (return posts) `mappend`
@@ -92,7 +93,7 @@ main = do
     match "index.html" $ do
       route idRoute
       compile $ do
-          posts <- recentFirst =<< loadAll "posts/*"
+          posts <- recentFirst =<< loadAllSnapshots "posts/*" "content"
           let indexCtx =
                   listField "posts" teasCtx (return posts) `mappend`
                   pageCtx
