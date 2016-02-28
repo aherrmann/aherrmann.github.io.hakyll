@@ -65,7 +65,7 @@ color5 = "#EB7260"
 
 --------------------------------------------------------------------------------
 pageBackgroundColor :: Color
-pageBackgroundColor = color4
+pageBackgroundColor = color4 +. 10
 
 headerBackgroundColor :: Color
 headerBackgroundColor = color1
@@ -86,7 +86,7 @@ headerSubtitleColor :: Color
 headerSubtitleColor = color2
 
 menuBackgroundColor :: Color
-menuBackgroundColor = color4 -. 20
+menuBackgroundColor = sectionBackgroundColor
 
 menuBackground :: Css
 menuBackground = do
@@ -110,13 +110,11 @@ menuItemHoverColor :: Color
 menuItemHoverColor = color1 -. 20
 
 sectionBackgroundColor :: Color
-sectionBackgroundColor = pageBackgroundColor -. 10
+sectionBackgroundColor = pageBackgroundColor -. 15
 
 sectionBackground :: Css
 sectionBackground = do
     backgroundColor sectionBackgroundColor
-    background $
-        vGradient (sectionBackgroundColor -. 10) sectionBackgroundColor
 
 sectionTitleColor :: Color
 sectionTitleColor = pageBackgroundColor -. 50
