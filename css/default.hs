@@ -17,16 +17,6 @@ headings = h1 <> h2 <> h3 <> h4 <> h5 <> h6
 
 
 --------------------------------------------------------------------------------
-bevel :: Css
-bevel = "box-shadow" -: "0 1px 2px #fff,\n\
-                        \0 -1px 1px #666,\n\
-                        \inset 0 -1px 1px rgba(0,0,0,0.5),\n\
-                        \inset 0 1px 1px rgba(255,255,255,0.8),\n\
-                        \1px 0 2px #fff,\n\
-                        \-1px 0 1px #666,\n\
-                        \inset -1px 0 1px rgba(0,0,0,0.5),\n\
-                        \inset 1px 0 1px rgba(255,255,255,0.8);"
-
 fontSmooth :: Css
 fontSmooth = do
     "-webkit-font-smoothing" -: "subpixel-antialiased" -- "antialiased"
@@ -139,6 +129,9 @@ postDateColor = color4 -. 130
 
 codeBackgroundColor :: Color
 codeBackgroundColor = pageBackgroundColor
+
+codeBorderColor :: Color
+codeBorderColor = sectionBackgroundColor -. 20
 
 inlineCodeColor :: Color
 inlineCodeColor = textColor +. 10
@@ -309,7 +302,9 @@ codeSettings :: Css
 codeSettings = do
     pre ? do
         backgroundColor codeBackgroundColor
-        bevel
+        borderStyle solid
+        borderWidth (px 2)
+        borderColor codeBorderColor
         borderRadius (rem 0.5) (rem 0.5) (rem 0.5) (rem 0.5)
         padding (rem 0.5) (rem 0.5) (rem 0.7) (rem 0.5)
     p |> (code <> a |> code) ? do
