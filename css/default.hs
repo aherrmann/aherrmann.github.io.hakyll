@@ -180,7 +180,7 @@ fontSettings = do
         color linkHoverColor
     code <> code |> span ? do
         fontFamily ["Droid Sans Mono"] []
-    star ? do
+    ".post-preview" <> "#post" ? do
         fontFamily ["Merriweather", "Georgia"] [serif]
         color textColor
 
