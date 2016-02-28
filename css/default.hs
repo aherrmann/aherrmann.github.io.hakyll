@@ -171,12 +171,12 @@ fontSettings = do
     nav ** (a <> span) ? do
         fontFamily ["Merriweather Sans"] [sansSerif]
         fontWeight bold
-    a <> a |> span ? do
+    a <> a |> span <> a |> code ? do
         color linkColor
         textDecoration none
-    a # visited <> a # visited |> span ? do
+    a # visited <> a # visited |> span <> a # visited |> code ? do
         color linkVisitedColor
-    a # hover <> a # hover |> span ? do
+    a # hover <> a # hover |> span <> a # hover |> code ? do
         color linkHoverColor
     code <> code |> span ? do
         fontFamily ["Droid Sans Mono"] []
