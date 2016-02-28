@@ -7,7 +7,8 @@ import           Data.List.Split (split, condense, whenElt)
 import qualified Data.Map as M
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid (mappend)
-import           Text.Pandoc.Options (writerHtml5)
+import qualified Data.Set as S
+import qualified Text.Pandoc.Options as PO
 import qualified Text.HTML.TagSoup as TS
 import           Text.Hyphenation (english_US, hyphenate)
 import           Hakyll
@@ -38,9 +39,19 @@ main = do
           teaserField "teaser" "content"           `mappend`
           postCtx
       customPandocCompiler =
-          pandocCompilerWith
-                defaultHakyllReaderOptions
-                defaultHakyllWriterOptions { writerHtml5 = True }
+          let mathExtensions = [ PO.Ext_tex_math_dollars
+                               , PO.Ext_tex_math_double_backslash
+                               , PO.Ext_latex_macros ]
+              defaultExtensions =
+                  PO.writerExtensions defaultHakyllWriterOptions
+              newExtensions =
+                  foldr S.insert defaultExtensions mathExtensions
+              writerOptions = defaultHakyllWriterOptions
+                { PO.writerExtensions = newExtensions
+                , PO.writerHTMLMathMethod = PO.MathJax ""
+                , PO.writerHtml5 = True
+                }
+          in pandocCompilerWith defaultHakyllReaderOptions writerOptions
 
   hakyll $ do
     match "images/*" $ do
