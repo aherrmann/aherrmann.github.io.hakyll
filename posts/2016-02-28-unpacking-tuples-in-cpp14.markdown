@@ -176,7 +176,7 @@ example the following lambda returns the smallest absolute value of all given
 parameters.
 
 ``` cpp
-    auto minabs(auto... xs) {
+    auto minabs = [](auto... xs) {
         return min({abs(xs)...});
     };
 
