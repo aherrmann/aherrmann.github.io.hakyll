@@ -189,25 +189,40 @@ getTeaserContents =
 
 
 --------------------------------------------------------------------------------
-transformTextExcept :: String -> (String -> String) -> String -> String
-transformTextExcept tag f = TS.renderTags . go 0 . TS.parseTags where
-    go _   []     = []
-    go 0 (TS.TagText t:xs)       = TS.TagText (f t):go 0 xs
-    go l (x@(TS.TagOpen _ _):xs) = if x TS.~== TS.TagOpen tag []
-                                       then x:go (l + 1) xs
-                                       else x:go l xs
-    go l (x@(TS.TagClose _):xs)  = if x TS.~== TS.TagClose tag
-                                       then x:go (l - 1) xs
-                                       else x:go l xs
-    go l (x:xs)                  = x:go l xs
+transformTextExcept :: (TS.Tag String -> Bool) -- predicate on @TS.TagOpen@
+                    -> (String -> String) -- manipulate text if predicate false
+                    -> String -> String
+transformTextExcept pred f = TS.renderTags . go . TS.parseTags where
+    go [] = []
+    go (TS.TagText t:xs) = TS.TagText (f t) : go xs
+    go (x@(TS.TagOpen tag _):xs)
+        | pred x    = x : skip tag 0 xs
+        | otherwise = x : go xs
+    go (x:xs) = x : go xs
+    skip tag l (x@(TS.TagOpen _ _):xs)
+        | x TS.~== TS.TagOpen tag [] = x : skip tag (succ l) xs
+        | otherwise                  = x : skip tag l xs
+    skip tag l (x@(TS.TagClose _):xs)
+        | x TS.~== TS.TagClose tag = case l of
+                                         0 -> x : go xs
+                                         _ -> x : skip tag (l-1) xs
+        | otherwise                = x : skip tag l xs
+    skip tag l (x:xs)              = x : skip tag l xs
 
 
 --------------------------------------------------------------------------------
 hyphenateItem :: Item String -> Compiler (Item String)
 hyphenateItem item = return
                    $ flip itemSetBody item
-                   $ transformTextExcept "code" hy (itemBody item)
+                   $ transformTextExcept codeOrMaths hy (itemBody item)
   where
+    codeOrMaths :: TS.Tag String -> Bool
+    codeOrMaths x@(TS.TagOpen name attrs)
+        | x TS.~== TS.TagOpen ("code" :: String) [] = True
+        | ("class", "math display") `elem` attrs    = True
+        | ("class", "math inline") `elem` attrs     = True
+        | otherwise                                 = False
+    codeOrMaths _ = False
     hy = concat
        . map (intercalate hyphen . hyphenate english_US)
        . (split . condense . whenElt) (\c -> isSpace c || c == '-')
