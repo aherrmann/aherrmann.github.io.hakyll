@@ -154,7 +154,7 @@ makeCategoryPath :: Metadata -> Routes
 makeCategoryPath md =
     gsubRoute "posts/" $ const . (++ "/") $
     fromMaybe (error "Posts: Post without category!") $
-    M.lookup "category" md
+    lookupString "category" md
 
 
 --------------------------------------------------------------------------------
