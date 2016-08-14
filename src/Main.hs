@@ -1,5 +1,9 @@
---------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
+
+
+module Main where
+
+
 import           Data.Char (isSpace)
 import           Data.DateTime (formatDateTime, getCurrentTime)
 import           Data.List (intercalate, isInfixOf)
@@ -16,6 +20,9 @@ import           System.FilePath.Posix (takeDirectory, splitFileName)
 
 
 --------------------------------------------------------------------------------
+-- Main Program
+
+
 main :: IO ()
 main = do
   currYear <- formatDateTime "%Y" <$> getCurrentTime
@@ -47,6 +54,7 @@ main = do
           in pandocCompilerWith defaultHakyllReaderOptions writerOptions
 
   hakyll $ do
+
     match "images/*" $ do
       route   idRoute
       compile copyFileCompiler
@@ -130,6 +138,12 @@ main = do
 
 
 --------------------------------------------------------------------------------
+-- Routing
+
+
+-- | Construct route of a blog post
+--
+-- Posts are routed as `<category>/<yyyy>/<mm>/<dd>/<title>/index.html`.
 postRoute :: Routes
 postRoute =
     -- TODO: Consider to store articles in a path that defines the category.
@@ -142,7 +156,6 @@ postRoute =
     asIndexRoute "html"
 
 
---------------------------------------------------------------------------------
 makeCategoryPath :: Metadata -> Routes
 makeCategoryPath md =
     gsubRoute "posts/" $ const . (++ "/") $
@@ -150,20 +163,24 @@ makeCategoryPath md =
     lookupString "category" md
 
 
---------------------------------------------------------------------------------
 postDateRoute :: Routes
 postDateRoute =
     gsubRoute "/[0-9]{4}-[0-9]{2}-[0-9]{2}-" $ replaceAll "-" (const "/")
 
 
---------------------------------------------------------------------------------
 asIndexRoute :: String -> Routes
 asIndexRoute extension =
     gsubRoute ('.':extension) $ const ("/index." ++ extension)
 
 
---------------------------------------------------------------------------------
+----------------------------------------------------------------------
+-- Context Fields
+
+
 -- | Transform a URL field to one that crops the /index.html in the end.
+--
+-- So that blog articles and other pages are linked to as `<some>/<path>` instead of `<some>/<path>/index.html`.
+-- If the url does not end on `index.html` then the original url is given.
 directoryUrlField :: String -> Context a
 directoryUrlField key = mapContext removeIndexStr (urlField "url")
     where
@@ -174,16 +191,32 @@ directoryUrlField key = mapContext removeIndexStr (urlField "url")
                 _                   -> url
 
 
---------------------------------------------------------------------------------
+----------------------------------------------------------------------
+-- Teaser
+
+
 getTeaserContents :: [Item String] -> [Item String]
 getTeaserContents = 
   map $ \x -> itemSetBody (fromMaybe (itemBody x) $ 
     needlePrefix "<!--more-->" $ itemBody x) x
 
 
---------------------------------------------------------------------------------
-transformTextExcept :: (TS.Tag String -> Bool) -- predicate on @TS.TagOpen@
-                    -> (String -> String) -- manipulate text if predicate false
+----------------------------------------------------------------------
+-- Hyphenation
+
+
+-- | Transform the text between tags unless the given predicate holds.
+--
+-- @transformTextExcept pred f str@ reads @str@ as html.
+-- It applies @f@ to all text elements and replaces them with @f@'s result unless @pred@ holds on a parent tag.
+--
+-- E.g.
+-- @
+--     transformTextExcept (~== TagOpen "code") fun
+-- @
+-- would transform all text using @fun@ except text which is contained within a pair of @<code>@ @</code>@ tags.
+transformTextExcept :: (TS.Tag String -> Bool) -- ^ predicate on @TS.TagOpen@
+                    -> (String -> String) -- ^ manipulate text if predicate false
                     -> String -> String
 transformTextExcept pred f = TS.renderTags . go . TS.parseTags where
     go [] = []
@@ -203,7 +236,7 @@ transformTextExcept pred f = TS.renderTags . go . TS.parseTags where
     skip tag l (x:xs)              = x : skip tag l xs
 
 
---------------------------------------------------------------------------------
+-- | Hyphenate all text except for code and maths.
 hyphenateItem :: Item String -> Compiler (Item String)
 hyphenateItem item = return
                    $ flip itemSetBody item
