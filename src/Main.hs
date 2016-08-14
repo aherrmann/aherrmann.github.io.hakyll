@@ -11,13 +11,15 @@ import           Data.List             (intercalate, isInfixOf)
 import           Data.List.Split       (condense, split, whenElt)
 import qualified Data.Map              as M
 import           Data.Maybe            (fromMaybe)
-import           Data.Monoid           ((<>),mappend)
+import           Data.Monoid           (mappend, (<>))
 import qualified Data.Set              as S
 import           Hakyll
 import           System.FilePath.Posix (splitFileName, takeDirectory)
 import qualified Text.HTML.TagSoup     as TS
 import           Text.Hyphenation      (english_US, hyphenate)
 import qualified Text.Pandoc.Options   as PO
+
+import           Adjacent
 
 
 --------------------------------------------------------------------------------
@@ -27,21 +29,25 @@ import qualified Text.Pandoc.Options   as PO
 main :: IO ()
 main = do
   currYear <- formatDateTime "%Y" <$> getCurrentTime
-  let pageRoot = "http://aherrmann.github.io"
-      pageCtx =
-          constField "pageRoot" pageRoot           `mappend`
-          constField "currYear" currYear           `mappend`
-          defaultContext
-      postCtx =
-          directoryUrlField "url"                  `mappend`
-          dateField "date" "%B %e, %Y"             `mappend`
-          pageCtx
-      teasCtx =
-          teaserField "teaser" "content"           `mappend`
-          postCtx
-
   hakyll $ do
 
+    -- Contexts
+    prevNextPostFields <- prevNextByDateFields "Post" "posts/*"
+    let pageRoot = "http://aherrmann.github.io"
+        pageCtx = mconcat
+          [ constField "pageRoot" pageRoot
+          , constField "currYear" currYear
+          , defaultContext ]
+        postCtx = mconcat
+          [ directoryUrlField "url"
+          , dateField "date" "%B %e, %Y"
+          , prevNextPostFields
+          , pageCtx ]
+        teasCtx = mconcat
+          [ teaserField "teaser" "content"
+          , postCtx ]
+
+    -- Matchers
     match "images/*" $ do
       route   idRoute
       compile copyFileCompiler

@@ -19,8 +19,14 @@
 </section>
 <nav id="post-nav">
   <ul>
+    $if(prevPost)$
+    <li><a href="$prevPost$">Previous</a></li>
+    $endif$
     <li><a href="#">Back to start</a></li>
     <li><a href="/archive">Archive</a></li>
+    $if(nextPost)$
+    <li><a href="$nextPost$">Next</a></li>
+    $endif$
   </ul>
 </nav>
 <section id="comments">
