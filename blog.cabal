@@ -1,19 +1,21 @@
-name:               blog
-version:            0.1.0.0
-build-type:         Simple
-cabal-version:      >= 1.10
+name: blog
+version: 0.1.0.0
+cabal-version: >=1.10
+build-type: Simple
+license: UnspecifiedLicense
 
 executable site
-  main-is:          site.hs
-  build-depends:    base == 4.*
-                  , clay
-                  , containers
-                  , datetime
-                  , filepath
-                  , hyphenation
-                  , pandoc
-                  , split
-                  , tagsoup
-                  , hakyll == 4.7.*
-  ghc-options:      -threaded
-  default-language: Haskell2010
+    main-is: site.hs
+    build-depends:
+        base ==4.*,
+        clay ==0.11.*,
+        containers >=0.5.7.1 && <0.6,
+        datetime >=0.3.1 && <0.4,
+        filepath >=1.4.1.0 && <1.5,
+        hyphenation ==0.6.*,
+        pandoc >=1.17.1 && <1.18,
+        split >=0.2.3.1 && <0.3,
+        tagsoup ==0.14.*,
+        hakyll >=4.8.3.2 && <4.9
+    default-language: Haskell2010
+    ghc-options: -threaded
