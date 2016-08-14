@@ -4,19 +4,19 @@
 module Main where
 
 
-import           Data.Char (isSpace)
-import           Data.DateTime (formatDateTime, getCurrentTime)
-import           Data.List (intercalate, isInfixOf)
-import           Data.List.Split (split, condense, whenElt)
-import qualified Data.Map as M
-import           Data.Maybe (fromMaybe)
-import           Data.Monoid (mappend)
-import qualified Data.Set as S
-import qualified Text.Pandoc.Options as PO
-import qualified Text.HTML.TagSoup as TS
-import           Text.Hyphenation (english_US, hyphenate)
+import           Data.Char             (isSpace)
+import           Data.DateTime         (formatDateTime, getCurrentTime)
+import           Data.List             (intercalate, isInfixOf)
+import           Data.List.Split       (condense, split, whenElt)
+import qualified Data.Map              as M
+import           Data.Maybe            (fromMaybe)
+import           Data.Monoid           (mappend)
+import qualified Data.Set              as S
 import           Hakyll
-import           System.FilePath.Posix (takeDirectory, splitFileName)
+import           System.FilePath.Posix (splitFileName, takeDirectory)
+import qualified Text.HTML.TagSoup     as TS
+import           Text.Hyphenation      (english_US, hyphenate)
+import qualified Text.Pandoc.Options   as PO
 
 
 --------------------------------------------------------------------------------
@@ -196,8 +196,8 @@ directoryUrlField key = mapContext removeIndexStr (urlField "url")
 
 
 getTeaserContents :: [Item String] -> [Item String]
-getTeaserContents = 
-  map $ \x -> itemSetBody (fromMaybe (itemBody x) $ 
+getTeaserContents =
+  map $ \x -> itemSetBody (fromMaybe (itemBody x) $
     needlePrefix "<!--more-->" $ itemBody x) x
 
 
