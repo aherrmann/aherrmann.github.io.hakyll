@@ -177,6 +177,8 @@ asIndexRoute extension =
 directoryUrlField :: String -> Context a
 directoryUrlField key = mapContext removeIndexStr (urlField "url")
     where
+        -- Credit to Yann Esposito, with minor changes
+        -- http://yannesposito.com/Scratch/en/blog/Hakyll-setup/
         removeIndexStr :: String -> String
         removeIndexStr url =
             case splitFileName url of
