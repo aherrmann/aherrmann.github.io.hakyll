@@ -48,26 +48,18 @@ main = do
           , postCtx ]
 
     -- Matchers
-    match "images/*" $ do
+    match ( "images/*" .||. "fonts/*" .||. "js/*.js" ) $ do
       route   idRoute
       compile copyFileCompiler
 
-    match "fonts/*" $ do
+    match "css/*.css" $ do
       route   idRoute
-      compile copyFileCompiler
+      compile compressCssCompiler
 
     match "css/*.hs" $ do
       route   $ setExtension "css"
       compile $ getResourceString
           >>= withItemBody (unixFilter "cabal" ["exec", "runghc"])
-
-    match "css/*" $ do
-      route   idRoute
-      compile compressCssCompiler
-
-    match "js/*.js" $ do
-      route   idRoute
-      compile copyFileCompiler
 
     match (fromList ["about.rst", "contact.markdown"]) $ do
       route   $ setExtension "html"
