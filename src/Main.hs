@@ -39,20 +39,6 @@ main = do
       teasCtx =
           teaserField "teaser" "content"           `mappend`
           postCtx
-      customPandocCompiler =
-          let mathExtensions = [ PO.Ext_tex_math_dollars
-                               , PO.Ext_tex_math_double_backslash
-                               , PO.Ext_latex_macros ]
-              defaultExtensions =
-                  PO.writerExtensions defaultHakyllWriterOptions
-              newExtensions =
-                  foldr S.insert defaultExtensions mathExtensions
-              writerOptions = defaultHakyllWriterOptions
-                { PO.writerExtensions = newExtensions
-                , PO.writerHTMLMathMethod = PO.MathJax ""
-                , PO.writerHtml5 = True
-                }
-          in pandocCompilerWith defaultHakyllReaderOptions writerOptions
 
   hakyll $ do
 
@@ -72,6 +58,10 @@ main = do
     match "css/*" $ do
       route   idRoute
       compile compressCssCompiler
+
+    match "js/*.js" $ do
+      route   idRoute
+      compile copyFileCompiler
 
     match (fromList ["about.rst", "contact.markdown"]) $ do
       route   $ setExtension "html"
@@ -132,6 +122,35 @@ main = do
         renderAtom feedConfig feedCtx recent
 
     match "templates/*" $ compile templateCompiler
+
+
+--------------------------------------------------------------------------------
+-- Pandoc
+
+
+readerOpts :: PO.ReaderOptions
+readerOpts =
+  defaultHakyllReaderOptions
+    { PO.readerExtensions = foldr S.insert defaultExtensions extensions }
+  where
+    defaultExtensions = PO.readerExtensions defaultHakyllReaderOptions
+    extensions =
+      [ PO.Ext_tex_math_dollars
+      , PO.Ext_tex_math_double_backslash
+      , PO.Ext_latex_macros
+      , PO.Ext_inline_code_attributes ]
+
+
+writerOpts :: PO.WriterOptions
+writerOpts =
+  defaultHakyllWriterOptions
+    { PO.writerHTMLMathMethod = PO.KaTeX "" ""
+    , PO.writerHtml5 = True }
+
+
+customPandocCompiler :: Compiler (Item String)
+customPandocCompiler =
+  pandocCompilerWith readerOpts writerOpts
 
 
 --------------------------------------------------------------------------------

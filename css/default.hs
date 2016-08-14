@@ -315,6 +315,13 @@ codeSettings = do
 
 
 --------------------------------------------------------------------------------
+mathsSettings :: Css
+mathsSettings = do
+    ".katex-display" ? do
+        overflowX scroll
+
+
+--------------------------------------------------------------------------------
 mainCss :: Css
 mainCss = do
     fontSettings
@@ -322,6 +329,7 @@ mainCss = do
     pageFooterSettings
     postSettings
     codeSettings
+    mathsSettings
     body ? do
         maxWidth (px 700)
         margin (rem 0) auto (rem 0) auto
