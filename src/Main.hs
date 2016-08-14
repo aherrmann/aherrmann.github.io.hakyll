@@ -6,11 +6,12 @@ module Main where
 
 import           Data.Char             (isSpace)
 import           Data.DateTime         (formatDateTime, getCurrentTime)
+import           Data.Function         ((&))
 import           Data.List             (intercalate, isInfixOf)
 import           Data.List.Split       (condense, split, whenElt)
 import qualified Data.Map              as M
 import           Data.Maybe            (fromMaybe)
-import           Data.Monoid           (mappend)
+import           Data.Monoid           ((<>),mappend)
 import qualified Data.Set              as S
 import           Hakyll
 import           System.FilePath.Posix (splitFileName, takeDirectory)
@@ -118,21 +119,17 @@ main = do
     create [ "atom.xml" ] $ do
       route idRoute
       compile $ do
-          posts <- fmap (take 10) . recentFirst             =<<
-                       (return . getTeaserContents)         =<<
-                       loadAllSnapshots "posts/*" "content"
-          let feedConfig = FeedConfiguration
-                  { feedTitle       = "Programming Blog"
-                  , feedDescription = ""
-                  , feedAuthorName  = "Andreas Herrmann"
-                  , feedAuthorEmail = "andreash87@gmx.ch"
-                  , feedRoot        = pageRoot
-                  }
-              feedCtx =
-                  teasCtx                                  `mappend`
-                  bodyField "description"
-
-          renderAtom feedConfig feedCtx posts
+        let feedConfig = FeedConfiguration
+                { feedTitle       = "Programming Blog"
+                , feedDescription = ""
+                , feedAuthorName  = "Andreas Herrmann"
+                , feedAuthorEmail = "andreash87@gmx.ch"
+                , feedRoot        = pageRoot
+                }
+            feedCtx = teasCtx <> bodyField "description"
+        allTeasers <- getTeaserContents <$> loadAllSnapshots "posts/*" "content"
+        recent <- take 10 <$> recentFirst allTeasers
+        renderAtom feedConfig feedCtx recent
 
     match "templates/*" $ compile templateCompiler
 
@@ -249,7 +246,7 @@ hyphenateItem item = return
         | ("class", "math inline") `elem` attrs     = True
         | otherwise                                 = False
     codeOrMaths _ = False
-    hy = concat
-       . map (intercalate hyphen . hyphenate english_US)
-       . (split . condense . whenElt) (\c -> isSpace c || c == '-')
+    hy = concatMap (intercalate hyphen . hyphenate english_US)
+       . split splitter
+    splitter = condense $ whenElt (\c -> isSpace c || c == '-')
     hyphen = "\x00ad"
