@@ -6,10 +6,8 @@ module Main where
 
 import           Data.Char             (isSpace)
 import           Data.DateTime         (formatDateTime, getCurrentTime)
-import           Data.Function         ((&))
-import           Data.List             (intercalate, isInfixOf)
+import           Data.List             (intercalate)
 import           Data.List.Split       (condense, split, whenElt)
-import qualified Data.Map              as M
 import           Data.Maybe            (fromMaybe)
 import           Data.Monoid           (mappend, (<>))
 import qualified Data.Set              as S
@@ -20,6 +18,7 @@ import           Text.Hyphenation      (english_US, hyphenate)
 import qualified Text.Pandoc.Options   as PO
 
 import           Adjacent
+import           Highlight
 
 
 --------------------------------------------------------------------------------
@@ -63,13 +62,13 @@ main = do
 
     match (fromList ["about.rst", "contact.markdown"]) $ do
       route   $ setExtension "html"
-      compile $ pandocCompiler
+      compile $ customPandocCompiler
           >>= loadAndApplyTemplate "templates/default.html" pageCtx
           >>= relativizeUrls
 
     match "posts/*" $ do
       route   postRoute
-      compile $ pandocCompiler
+      compile $ customPandocCompiler
           >>= hyphenateItem
           >>= loadAndApplyTemplate "templates/post-content.html" postCtx
           >>= saveSnapshot "content"
@@ -142,13 +141,13 @@ readerOpts =
 writerOpts :: PO.WriterOptions
 writerOpts =
   defaultHakyllWriterOptions
-    { PO.writerHTMLMathMethod = PO.KaTeX "" ""
+    { PO.writerHTMLMathMethod = PO.MathJax ""
     , PO.writerHtml5 = True }
 
 
 customPandocCompiler :: Compiler (Item String)
 customPandocCompiler =
-  pandocCompilerWith readerOpts writerOpts
+  pandocCompilerWithTransformM readerOpts writerOpts syntaxHighlight
 
 
 --------------------------------------------------------------------------------
@@ -192,7 +191,7 @@ asIndexRoute extension =
 -- So that blog articles and other pages are linked to as `<some>/<path>` instead of `<some>/<path>/index.html`.
 -- If the url does not end on `index.html` then the original url is given.
 directoryUrlField :: String -> Context a
-directoryUrlField key = mapContext removeIndexStr (urlField "url")
+directoryUrlField key = mapContext removeIndexStr (urlField key)
     where
         -- Credit to Yann Esposito, with minor changes
         -- http://yannesposito.com/Scratch/en/blog/Hakyll-setup/
@@ -219,8 +218,8 @@ getTeaserContents =
 
 -- | Transform the text between tags unless the given predicate holds.
 --
--- @transformTextExcept pred f str@ reads @str@ as html.
--- It applies @f@ to all text elements and replaces them with @f@'s result unless @pred@ holds on a parent tag.
+-- @transformTextExcept p f str@ reads @str@ as html.
+-- It applies @f@ to all text elements and replaces them with @f@'s result unless @p@ holds on a parent tag.
 --
 -- E.g.
 -- @
@@ -230,11 +229,11 @@ getTeaserContents =
 transformTextExcept :: (TS.Tag String -> Bool) -- ^ predicate on @TS.TagOpen@
                     -> (String -> String) -- ^ manipulate text if predicate false
                     -> String -> String
-transformTextExcept pred f = TS.renderTags . go . TS.parseTags where
+transformTextExcept p f = TS.renderTags . go . TS.parseTags where
     go [] = []
     go (TS.TagText t:xs) = TS.TagText (f t) : go xs
     go (x@(TS.TagOpen tag _):xs)
-        | pred x    = x : skip tag 0 xs
+        | p x       = x : skip tag 0 xs
         | otherwise = x : go xs
     go (x:xs) = x : go xs
     skip tag l (x@(TS.TagOpen _ _):xs)
@@ -246,6 +245,7 @@ transformTextExcept pred f = TS.renderTags . go . TS.parseTags where
                                          _ -> x : skip tag (l-1) xs
         | otherwise                = x : skip tag l xs
     skip tag l (x:xs)              = x : skip tag l xs
+    skip _ _ [] = []
 
 
 -- | Hyphenate all text except for code and maths.
@@ -255,8 +255,9 @@ hyphenateItem item = return
                    $ transformTextExcept codeOrMaths hy (itemBody item)
   where
     codeOrMaths :: TS.Tag String -> Bool
-    codeOrMaths x@(TS.TagOpen name attrs)
+    codeOrMaths x@(TS.TagOpen _ attrs)
         | x TS.~== TS.TagOpen ("code" :: String) [] = True
+        | x TS.~== TS.TagOpen ("pre" :: String)  [] = True
         | ("class", "math display") `elem` attrs    = True
         | ("class", "math inline") `elem` attrs     = True
         | otherwise                                 = False

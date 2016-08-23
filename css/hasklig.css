@@ -1,0 +1,97 @@
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-ExtraLight.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-ExtraLightIt.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-Light.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-LightIt.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-Medium.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-MediumIt.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-Regular.otf') format('opentype');
+  font-weight: normal; /* 400 */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-It.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-SemiboldIt.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-Bold.otf') format('opentype');
+  font-weight: bold; /* 700 */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-BoldIt.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Hasklig';
+  src: url('../fonts/Hasklig-BlackIt.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+}

@@ -43,11 +43,14 @@ let
       clay
       datetime
       hakyll
+      hpygments
       hyphenation
     ]);
 in
   pkgs.stdenv.mkDerivation {
     name = "blog-env";
-    buildInputs = [ ghc ];
+    buildInputs = with pythonPackages; [
+      ghc pygments pygments-markdown-lexer
+    ];
     shellHook = "eval $(egrep ^export ${ghc}/bin/ghc)";
   }

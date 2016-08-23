@@ -6,15 +6,18 @@
     <meta name="description" content="A Blog about programming.">
     <meta name="author" content="Andreas Herrmann">
 
+    <!-- TODO: Set page-title by context field -->
     <title>Programming Blog &ndash; by Andreas Herrmann</title>
 
-    <link href='https://fonts.googleapis.com/css?family=Droid+Sans+Mono|Merriweather:400,400italic,700|Merriweather+Sans:400,400italic,700' rel='stylesheet' type='text/css'>
+    <link
+    href="https://fonts.googleapis.com/css?family=Merriweather:light,bolditalic,black|Merriweather+Sans:lightitalic,regular,regularitalic" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="/css/default.css" />
     <link rel="stylesheet" type="text/css" href="/css/syntax.css" />
-    <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css" />
-
     <link rel="stylesheet" type="text/css" href="/css/katex.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/hasklig.css" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+
     <script type="text/javascript" src="/js/katex.min.js"></script>
     <script type="text/javascript" src="/js/auto-render.min.js"></script>
 
@@ -29,10 +32,9 @@
   </head>
 
   <body>
-    <header id="page-header">
+    <div id="page-header">
       <header id="page-title">
-        <h1><a href="/">Programming Blog</a></h1>
-        <h2>by Andreas Herrmann</h2>
+        <h1><a href="/">Andreas Herrmann</a></h1>
       </header>
       <nav id="page-nav">
         <ul>
@@ -58,11 +60,13 @@
               <span class="menu-text">GitHub</span></a></li>
         </ul>
       </nav>
-    </header>
+    </div>
 
-    <section>
+    <hr>
+
+    <main>
       $body$
-    </section>
+    </main>
 
     <footer id="page-footer">
       <p>

@@ -331,7 +331,7 @@ Another way, which is the way in which Jekyll does it, is by a metadata field
 which is inserted into the URL. For that we first need to add category fields
 to the YAML headers of all Blog posts. E.g.
 
-``` markdown
+``` yaml
 ---
 title: S.P.Q.R.
 category: category_a

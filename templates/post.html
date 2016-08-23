@@ -4,46 +4,79 @@
     <p>Posted on $date$ $if(author)$ by $author$ $endif$</p>
   </header>
 
-  $body$
+  <div id="post-content">
+    $body$
+  </div>
+
+  <hr>
+
+  <nav id="post-nav">
+    <ul>
+      $if(prevPost)$
+      <li><a href="$prevPost$">
+          <span aria-hidden="true"
+                title="Previous Post"
+                class="post-nav-logo fa fa-chevron-left"/>
+          <span class="post-nav-text">Previous</span></a></li>
+      $else$
+      <li><a disabled aria-disabled="true">
+          <span aria-hidden="true"
+                title="Previous Post"
+                class="post-nav-logo fa fa-chevron-left"/>
+          <span class="post-nav-text">Previous</span></a></li>
+      $endif$
+      <li><a href="#">
+          <span aria-hidden="true"
+                title="Back to Start"
+                class="post-nav-logo fa fa-chevron-up"/>
+          <span class="post-nav-text">Back to Start</span></a></li>
+      <li><a href="/archive">
+          <span aria-hidden="true"
+                title="Archive"
+                class="post-nav-logo fa fa-book"/>
+          <span class="post-nav-text">Archive</span></a></li>
+      $if(nextPost)$
+      <li><a href="$nextPost$">
+          <span aria-hidden="true"
+                title="Next Post"
+                class="post-nav-logo fa fa-chevron-right"/>
+          <span class="post-nav-text">Next</span></a></li>
+      $else$
+      <li><a disabled aria-disabled="true">
+          <span aria-hidden="true"
+                title="Next Post"
+                class="post-nav-logo fa fa-chevron-right"/>
+          <span class="post-nav-text">Next</span></a></li>
+      $endif$
+    </ul>
+  </nav>
+  <footer id="sharing">
+    <script type="text/javascript">
+      $if(reddit_url)$
+      reddit_url = "$reddit_url$";
+      $else$
+      reddit_url = "$pageRoot$$url$";
+      $endif$
+      reddit_title = "$title$";
+    </script>
+    <script type="text/javascript" src="//www.redditstatic.com/button/button3.js"></script>
+  </footer>
+  <section id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+    this.page.url = "$pageRoot$$url$";
+    // this.page.identifier = PAGE_IDENTIFIER;
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+  
+    s.src = '//aherrmann.disqus.com/embed.js';
+  
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </section>
 </article>
-<section id="sharing">
-  <script type="text/javascript">
-    $if(reddit_url)$
-    reddit_url = "$reddit_url$";
-    $else$
-    reddit_url = "$pageRoot$$url$";
-    $endif$
-    reddit_title = "$title$";
-  </script>
-  <script type="text/javascript" src="//www.redditstatic.com/button/button3.js"></script>
-</section>
-<nav id="post-nav">
-  <ul>
-    $if(prevPost)$
-    <li><a href="$prevPost$">Previous</a></li>
-    $endif$
-    <li><a href="#">Back to start</a></li>
-    <li><a href="/archive">Archive</a></li>
-    $if(nextPost)$
-    <li><a href="$nextPost$">Next</a></li>
-    $endif$
-  </ul>
-</nav>
-<section id="comments">
-  <div id="disqus_thread"></div>
-  <script>
-  var disqus_config = function () {
-  this.page.url = "$pageRoot$$url$";
-  // this.page.identifier = PAGE_IDENTIFIER;
-  };
-  (function() { // DON'T EDIT BELOW THIS LINE
-  var d = document, s = d.createElement('script');
-
-  s.src = '//aherrmann.disqus.com/embed.js';
-
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-  })();
-  </script>
-  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-</section>
