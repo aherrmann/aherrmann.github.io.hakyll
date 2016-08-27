@@ -30,6 +30,7 @@ globalSettings = do
 fontSettings = do
   body ? do
     fontFamily ["Merriweather Sans"] [sansSerif]
+    textRendering optimizeLegibility
   header ** p ? do
     fontFamily ["Merriweather Sans"] [sansSerif]
     fontWeight (weight 400)
