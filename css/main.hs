@@ -52,6 +52,10 @@ fontSettings = do
     color "#333333"
   "#page-footer" ? do
     color "#999999"
+    a ? do
+      color "#444444"
+    a # visited ? do
+      color "#666666"
   "#section-title" ? do
     fontFamily ["Merriweather"] [serif]
     fontWeight (weight 700)
