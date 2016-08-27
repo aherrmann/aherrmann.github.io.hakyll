@@ -7,7 +7,15 @@
     <meta name="author" content="Andreas Herrmann">
 
     <!-- TODO: Set page-title by context field -->
-    <title>Programming Blog &ndash; by Andreas Herrmann</title>
+    $if(notitle)$
+    <title>Andreas Herrmann</title>
+    $else$
+      $if(title)$
+    <title>$title$ &ndash; Andreas Herrmann</title>
+      $else$
+    <title>Andreas Herrmann</title>
+      $endif$
+    $endif$
 
     <link
     href="https://fonts.googleapis.com/css?family=Merriweather:light,bolditalic,black|Merriweather+Sans:lightitalic,regular,regularitalic" rel="stylesheet">
