@@ -107,8 +107,8 @@ main = do
       route idRoute
       compile $ do
         let feedConfig = FeedConfiguration
-                { feedTitle       = "Programming Blog"
-                , feedDescription = ""
+                { feedTitle       = "Andreas Herrmann"
+                , feedDescription = "Blog"
                 , feedAuthorName  = "Andreas Herrmann"
                 , feedAuthorEmail = "andreash87@gmx.ch"
                 , feedRoot        = pageRoot
